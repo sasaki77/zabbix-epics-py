@@ -1,4 +1,8 @@
 import time
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 from zbxepics.logging import logger
 from zbxepics.pvsupport import ValQPV
@@ -17,6 +21,9 @@ class ZabbixSenderCA(object):
         self.zbx_sender = ZabbixSender(zabbix_server,
                                        zabbix_port,
                                        use_config)
+        self.__is_stop = threading.Event()
+        self.__stop_request = False
+
         if items is not None:
             self.add_items(items)
 
@@ -74,8 +81,9 @@ class ZabbixSenderCA(object):
                          "Sender process have no items.")
             return
 
+        self.__is_stop.clear()
         try:
-            while True:
+            while not self.__stop_request:
                 packet = []
 
                 # Create Zabbix metrics packet for monitor items
@@ -105,7 +113,14 @@ class ZabbixSenderCA(object):
             logger.error("%s: %s",
                          self.__class__.__name__,
                          "Aborted. Item definition is invalid.")
-        except KeyboardInterrupt:
-            logger.info("%s: %s.",
+        finally:
+            logger.info("%s: %s",
                         self.__class__.__name__,
                         "Sender process stopped.")
+            self.__stop_request = False
+            self.__is_stop.set()
+
+    def stop(self):
+        """Stops the run loop."""
+        self.__stop_request = True
+        self.__is_stop.wait()
