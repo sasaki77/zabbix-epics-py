@@ -1,0 +1,12 @@
+record(calcout, "ioc:heartbeat")
+{
+    field(DESC, "1 Hz counter since startup")
+    field(CALC, "(A<2147483647)?A+1:1")
+    field(SCAN, "1 second")
+    field(INPA, "ioc:heartbeat")
+}
+
+record(ai, "ioc:countup")
+{
+    field(DESC, "count up")
+}
