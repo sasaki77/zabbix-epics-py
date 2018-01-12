@@ -23,6 +23,9 @@ class ZabbixSenderCA(object):
                                        use_config)
         self.__is_stop = threading.Event()
         self.__stop_request = False
+        self._processed = 0
+        self._failed = 0
+        self._total = 0
 
         if items is not None:
             self.add_items(items)
@@ -108,6 +111,9 @@ class ZabbixSenderCA(object):
                     logger.debug("%s: %s",
                                  self.__class__.__name__,
                                  result)
+                    self._processed += result.processed
+                    self._failed += result.failed
+                    self._total += result.total
                 time.sleep(1)
         except KeyError:
             logger.error("%s: %s",
@@ -124,3 +130,15 @@ class ZabbixSenderCA(object):
         """Stops the run loop."""
         self.__stop_request = True
         self.__is_stop.wait()
+
+    @property
+    def processed(self):
+        return self._processed
+
+    @property
+    def failed(self):
+        return self._failed
+
+    @property
+    def total(self):
+        return self._total
