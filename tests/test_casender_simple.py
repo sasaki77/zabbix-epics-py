@@ -37,8 +37,6 @@ class TestZabbixSenderCA(unittest.TestCase):
         th_sender = threading.Thread(target=self.__sender.run)
         th_sender.start()
 
-        self.eventsReceived = 0
-
     def tearDown(self):
         self.__iocprocess.stop()
         self.__zbxserver.shutdown()
