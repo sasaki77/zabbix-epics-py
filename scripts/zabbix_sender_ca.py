@@ -29,7 +29,12 @@ def main():
     reader = ZabbixConfigReaderJSON(args.file)
     items = reader.get_items()
     sender = ZabbixSenderCA(args.server, args.port, args.config, items)
-    sender.run()
+    try:
+        sender.run()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sender.stop()
 
 
 if __name__ == "__main__":
