@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Zabbix-epics-py test configuration'''
+"""Zabbix-epics-py test configuration"""
 
 # Do we want verbose logging
 verbose = True
