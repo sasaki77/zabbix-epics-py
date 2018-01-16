@@ -44,21 +44,21 @@ class TestZabbixSenderCA(unittest.TestCase):
     def __setup_epics_env(self):
         sport = str(zbxepicstests.ioc_server_port)
         dport = str(zbxepicstests.ioc_repeater_port)
-        os.putenv("EPICS_CA_AUTO_ADDR_LIST", "NO")
-        os.putenv("EPICS_CA_ADDR_LIST", "localhost")
-        os.putenv("EPICS_CA_SERVER_PORT", sport)
-        os.putenv("EPICS_CA_REPEATER_PORT", dport)
+        os.putenv('EPICS_CA_AUTO_ADDR_LIST', 'NO')
+        os.putenv('EPICS_CA_ADDR_LIST', 'localhost')
+        os.putenv('EPICS_CA_SERVER_PORT', sport)
+        os.putenv('EPICS_CA_REPEATER_PORT', dport)
 
     def __create_items(self):
         item = {}
-        item["host"] = "dummyServerHost"
-        item["pv"] = ValQPV("ioc:countup")
-        item["interval"] = "monitor"
+        item['host'] = 'dummyServerHost'
+        item['pv'] = ValQPV('ioc:countup')
+        item['interval'] = 'monitor'
 
         return (item,)
 
     def test_sender_ca(self):
-        pv = self.__items[0]["pv"]
+        pv = self.__items[0]['pv']
         for i in range(5):
             pv.put(i, wait=True)
             time.sleep(1)
@@ -68,12 +68,12 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         # We get 5 events: at connection, then at 5 value changes (puts)
         self.assertTrue(send_total == 5,
-                        "Send total: %d/5".format(send_total))
+                        'Send total: %d/5'.format(send_total))
 
 
 def main():
     unittest.main(verbosity=2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

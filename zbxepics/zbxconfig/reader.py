@@ -15,19 +15,19 @@ class ZabbixConfigReader(object):
     def _add_pv_item(self, hostname, pvname, interval, func=None):
         if (not bool(hostname)
                 or not bool(pvname)):
-            logger.error("'hostname' or 'pvname' is undifined.")
+            logger.error('hostname or pvname is undifined.')
             return
 
         item = {}
-        item["host"] = hostname
-        item["pv"] = ValQPV(pvname)
-        item["interval"] = interval
+        item['host'] = hostname
+        item['pv'] = ValQPV(pvname)
+        item['interval'] = interval
         if isinstance(interval, (int, float)):
             interval_ = int(interval)
             if interval_ < 1:
                 interval_ = 1
-            item["interval"] = interval_
-            item["func"] = func
+            item['interval'] = interval_
+            item['func'] = func
 
         self._items.append(item)
 
@@ -44,36 +44,36 @@ class ZabbixConfigReaderJSON(ZabbixConfigReader):
     def read_config(self, config_file):
         try:
             self._items = []
-            with open(config_file, "r") as f:
+            with open(config_file, 'r') as f:
                 json_data = json.load(f)
 
             # Read default configuration
             default_host = {}
             default_item = {}
-            if "default" in json_data:
-                if "host" in json_data["default"]:
-                    default_host = json_data["default"]["host"]
-                if "item" in default_host:
-                    default_item = default_host["item"]
+            if 'default' in json_data:
+                if 'host' in json_data['default']:
+                    default_host = json_data['default']['host']
+                if 'item' in default_host:
+                    default_item = default_host['item']
 
             # Read configuration
-            for host_ in json_data["hosts"]:
+            for host_ in json_data['hosts']:
                 host = copy.deepcopy(default_host)
                 host.update(host_)
-                if host["items"] is None:
+                if host['items'] is None:
                     continue
 
                 default_item_ = copy.deepcopy(default_item)
-                if "default" in host:
-                    if "item" in host["default"]:
-                        default_item_.update(host["default"]["item"])
+                if 'default' in host:
+                    if 'item' in host['default']:
+                        default_item_.update(host['default']['item'])
 
-                for item_ in host["items"]:
+                for item_ in host['items']:
                     item = copy.deepcopy(default_item_)
                     item.update(item_)
-                    self._add_pv_item(host["name"], item["pv"],
-                                      item["update"], item["func"])
+                    self._add_pv_item(host['name'], item['pv'],
+                                      item['update'], item['func'])
         except KeyError:
-            logger.error("%s: %s",
+            logger.error('%s: %s',
                          self.__class__.__name__,
-                         "Item key is too few.")
+                         'Item key is too few.')

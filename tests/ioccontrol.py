@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Controls the test IOC'''
+"""Controls the test IOC"""
 
 import os
 import subprocess
@@ -11,20 +11,20 @@ from zbxepics.logging import logger
 
 class IocControl(object):
 
-    def __init__(self, cpath="softIoc", arg_list=["-d", "test.db"],
+    def __init__(self, cpath='softIoc', arg_list=['-d', 'test.db'],
                  verbose=False):
         self.__command_path = cpath
         self.__child_env = os.environ.copy()
         self.__process = None
         self.__arg_list = arg_list
-        self.__devnull = None if verbose else open(os.devnull, "wb")
+        self.__devnull = None if verbose else open(os.devnull, 'wb')
 
     def start(self):
-        '''Starts the test IOC'''
+        """Starts the test IOC"""
         self.__setup()
         iocCommand = [self.__command_path]
         iocCommand.extend(self.__arg_list)
-        logger.info("Starting the IOC using %s", iocCommand)
+        logger.info('Starting the IOC using %s', iocCommand)
         self.__process = subprocess.Popen(iocCommand,
                                           stdin=subprocess.PIPE,
                                           stdout=self.__devnull,
@@ -34,7 +34,7 @@ class IocControl(object):
         atexit.register(self.stop)
 
     def stop(self):
-        '''Stops the test IOC'''
+        """Stops the test IOC"""
         if self.__process:
             self.__process.stdin.close()
             self.__process = None
@@ -44,10 +44,10 @@ class IocControl(object):
     def __setup(self):
         sport = str(zbxepicstests.ioc_server_port)
         dport = str(zbxepicstests.ioc_repeater_port)
-        self.__child_env["EPICS_CA_AUTO_ADDR_LIST"] = "NO"
-        self.__child_env["EPICS_CA_ADDR_LIST"] = "localhost"
-        self.__child_env["EPICS_CA_SERVER_PORT"] = sport
-        self.__child_env["EPICS_CA_REPEATER_PORT"] = dport
+        self.__child_env['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
+        self.__child_env['EPICS_CA_ADDR_LIST'] = 'localhost'
+        self.__child_env['EPICS_CA_SERVER_PORT'] = sport
+        self.__child_env['EPICS_CA_REPEATER_PORT'] = dport
 
 
 def main():
@@ -63,5 +63,5 @@ def main():
         ioc.stop()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

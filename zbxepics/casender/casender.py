@@ -14,7 +14,7 @@ class ZabbixSenderCA(object):
 
     """Docstring for ZabbixSenderCA. """
 
-    def __init__(self, zabbix_server="127.0.0.1", zabbix_port=10051,
+    def __init__(self, zabbix_server='127.0.0.1', zabbix_port=10051,
                  use_config=None, items=None):
         self._monitor_items = []
         self._interval_item_q = PriorityPeekQueue()
@@ -32,12 +32,12 @@ class ZabbixSenderCA(object):
 
     def add_item(self, item):
         try:
-            if item["interval"] == "monitor":
+            if item['interval'] == 'monitor':
                 self._monitor_items.append(item)
             else:
                 self._interval_item_q.put((0, item))
         except KeyError as e:
-            logger.error("%s: %s",
+            logger.error('%s: %s',
                          self.__class__.__name__,
                          e.message)
 
@@ -49,26 +49,26 @@ class ZabbixSenderCA(object):
         metrics = []
 
         for item in items:
-            pv = item["pv"]
+            pv = item['pv']
             data = pv.get_q_all()
             if not data:
                 continue
 
-            host = item["host"]
+            host = item['host']
             pvname = pv.pvname
-            item_key = "EPICS[" + pvname + "]"
-            interval = item["interval"]
-            if interval == "monitor":
+            item_key = 'EPICS[' + pvname + ']'
+            interval = item['interval']
+            if interval == 'monitor':
                 for val, timestamp in data:
                     m = ZabbixMetric(host, item_key, val, int(timestamp))
                     metrics.append(m)
             else:
                 try:
                     vals = [v for v, t in data]
-                    val = eval(item["func"])(vals)
+                    val = eval(item['func'])(vals)
                     metrics.append(ZabbixMetric(host, item_key, val))
                 except NameError as e:
-                    logger.error("%s: (%s) %s",
+                    logger.error('%s: (%s) %s',
                                  self.__class__.__name__,
                                  pvname,
                                  e.message)
@@ -79,9 +79,9 @@ class ZabbixSenderCA(object):
         if (not self._monitor_items
                 and self._interval_item_q.empty()):
             # Do not start if items is empty
-            logger.error("%s: %s",
+            logger.error('%s: %s',
                          self.__class__.__name__,
-                         "Sender process have no items.")
+                         'Sender process have no items.')
             return
 
         self.__is_stop.clear()
@@ -99,7 +99,7 @@ class ZabbixSenderCA(object):
                     now = int(time.time())
                     while now >= self._interval_item_q.peek()[0]:
                         _, item = self._interval_item_q.get()
-                        next_time = now + item["interval"]
+                        next_time = now + item['interval']
                         self._interval_item_q.put((next_time, item))
                         push_items.append(item)
                     metrics = self._create_metrics(push_items)
@@ -108,7 +108,7 @@ class ZabbixSenderCA(object):
                 # Send packet to Zabbix server.
                 if packet:
                     result = self.zbx_sender.send(packet)
-                    logger.debug("%s: %s",
+                    logger.debug('%s: %s',
                                  self.__class__.__name__,
                                  result)
                     self._processed += result.processed
@@ -116,13 +116,13 @@ class ZabbixSenderCA(object):
                     self._total += result.total
                 time.sleep(1)
         except KeyError:
-            logger.error("%s: %s",
+            logger.error('%s: %s',
                          self.__class__.__name__,
-                         "Aborted. Item definition is invalid.")
+                         'Aborted. Item definition is invalid.')
         finally:
-            logger.info("%s: %s",
+            logger.info('%s: %s',
                         self.__class__.__name__,
-                        "Sender process stopped.")
+                        'Sender process stopped.')
             self.__stop_request = False
             self.__is_stop.set()
 

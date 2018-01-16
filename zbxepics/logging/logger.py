@@ -15,8 +15,8 @@ class Logger(object):
     def __init__(self):
         stream_handler = logging.StreamHandler()
         formatter = logging.Formatter(
-            "%(asctime)s %(levelname)s: %(message)s",
-            "%Y-%m-%d %H:%M:%S")
+            '%(asctime)s %(levelname)s: %(message)s',
+            '%Y-%m-%d %H:%M:%S')
         stream_handler.setFormatter(formatter)
 
         self.logger = logging.getLogger(__name__)
