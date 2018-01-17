@@ -10,6 +10,35 @@ from zbxepics.casender.peekqueue import PriorityPeekQueue
 from zbxepics.casender.zbxmath import last, avg
 
 
+class ZabbixSenderItem(object):
+    def __init__(self, host, pvname, interval, func=None):
+        self.host = str(host)
+        self.pv = ValQPV(str(pvname))
+        self.interval = interval
+        if func:
+            self.func = eval(func)
+
+    def get_metrics(self):
+        metrics = []
+
+        data = self.pv.get_q_all()
+        if not data:
+            return metrics
+
+        item_key = 'EPICS[' + self.pv.pvname + ']'
+        if self.interval == 'monitor':
+            for val, timestamp in data:
+                m = ZabbixMetric(self.host, item_key, val, int(timestamp))
+                metrics.append(m)
+        else:
+            vals = [v for v, t in data]
+            val = self.func(vals)
+            m = ZabbixMetric(self.host, item_key, val)
+            metrics.append(m)
+
+        return metrics
+
+
 class ZabbixSenderCA(object):
 
     """Docstring for ZabbixSenderCA. """
@@ -27,51 +56,34 @@ class ZabbixSenderCA(object):
         self._failed = 0
         self._total = 0
 
-        if items is not None:
-            self.add_items(items)
+        if isinstance(items, (tuple, list)):
+            for item in items:
+                self.add_item(item)
 
     def add_item(self, item):
-        try:
-            if item['interval'] == 'monitor':
-                self._monitor_items.append(item)
-            else:
-                self._interval_item_q.put((0, item))
-        except KeyError as e:
-            logger.error('%s: %s',
-                         self.__class__.__name__,
-                         e.message)
+        host = item['host']
+        pvname = item['pv']
+        interval = item['interval']
+        func = item['func'] if 'func' in item else None
 
-    def add_items(self, items):
-        for item in items:
-            self.add_item(item)
+        sender_item = ZabbixSenderItem(host, pvname, interval, func)
+
+        if isinstance(interval, str):
+            if not interval == 'monitor':
+                raise Exception('"%s" is not support'.format(interval))
+            self._monitor_items.append(sender_item)
+        elif isinstance(interval, (int, float)):
+            if interval < 1:
+                raise Exception('The interval must be at least 1 second')
+            self._interval_item_q.put((0, sender_item))
+
+        return sender_item
 
     def _create_metrics(self, items):
         metrics = []
-
         for item in items:
-            pv = item['pv']
-            data = pv.get_q_all()
-            if not data:
-                continue
-
-            host = item['host']
-            pvname = pv.pvname
-            item_key = 'EPICS[' + pvname + ']'
-            interval = item['interval']
-            if interval == 'monitor':
-                for val, timestamp in data:
-                    m = ZabbixMetric(host, item_key, val, int(timestamp))
-                    metrics.append(m)
-            else:
-                try:
-                    vals = [v for v, t in data]
-                    val = eval(item['func'])(vals)
-                    metrics.append(ZabbixMetric(host, item_key, val))
-                except NameError as e:
-                    logger.error('%s: (%s) %s',
-                                 self.__class__.__name__,
-                                 pvname,
-                                 e.message)
+            m = item.get_metrics()
+            metrics.extend(m)
 
         return metrics
 
@@ -99,7 +111,7 @@ class ZabbixSenderCA(object):
                     now = int(time.time())
                     while now >= self._interval_item_q.peek()[0]:
                         _, item = self._interval_item_q.get()
-                        next_time = now + item['interval']
+                        next_time = now + item.interval
                         self._interval_item_q.put((next_time, item))
                         push_items.append(item)
                     metrics = self._create_metrics(push_items)
