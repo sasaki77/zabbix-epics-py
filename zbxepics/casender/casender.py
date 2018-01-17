@@ -79,13 +79,36 @@ class ZabbixSenderCA(object):
 
         return sender_item
 
+    def __get_interval_tasks(self):
+        tasks = []
+        if not self._interval_item_q.empty():
+            now = int(time.time())
+            while now >= self._interval_item_q.peek()[0]:
+                _, item = self._interval_item_q.get()
+                tasks.append(item)
+                # Rescedule
+                runtime = now + item.interval
+                self._interval_item_q.put((runtime, item))
+
+        return tasks
+
     def _create_metrics(self, items):
         metrics = []
+
         for item in items:
             m = item.get_metrics()
             metrics.extend(m)
 
         return metrics
+
+    def _send_metrics(self, metrics):
+        result = self.zbx_sender.send(metrics)
+        logger.debug('%s: %s',
+                     self.__class__.__name__,
+                     result)
+        self._processed += result.processed
+        self._failed += result.failed
+        self._total += result.total
 
     def run(self):
         if (not self._monitor_items
@@ -99,38 +122,19 @@ class ZabbixSenderCA(object):
         self.__is_stop.clear()
         try:
             while not self.__stop_request:
-                packet = []
+                item_tasks = []
+                item_tasks.extend(self._monitor_items)
+                item_tasks.extend(self.__get_interval_tasks())
 
-                # Create Zabbix metrics packet for monitor items
-                metrics = self._create_metrics(self._monitor_items)
-                packet.extend(metrics)
-
-                # Create Zabbix metrics packet for interval items
-                if not self._interval_item_q.empty():
-                    push_items = []
-                    now = int(time.time())
-                    while now >= self._interval_item_q.peek()[0]:
-                        _, item = self._interval_item_q.get()
-                        next_time = now + item.interval
-                        self._interval_item_q.put((next_time, item))
-                        push_items.append(item)
-                    metrics = self._create_metrics(push_items)
-                    packet.extend(metrics)
+                metrics = self._create_metrics(item_tasks)
 
                 # Send packet to Zabbix server.
-                if packet:
-                    result = self.zbx_sender.send(packet)
-                    logger.debug('%s: %s',
-                                 self.__class__.__name__,
-                                 result)
-                    self._processed += result.processed
-                    self._failed += result.failed
-                    self._total += result.total
+                if metrics:
+                    self._send_metrics(metrics)
+
                 time.sleep(1)
-        except KeyError:
-            logger.error('%s: %s',
-                         self.__class__.__name__,
-                         'Aborted. Item definition is invalid.')
+        except Exception as err:
+            logger.error(err)
         finally:
             logger.info('%s: %s',
                         self.__class__.__name__,
