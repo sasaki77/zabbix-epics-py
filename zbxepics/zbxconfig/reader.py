@@ -1,7 +1,6 @@
 import copy
 import json
 from zbxepics.logging import logger
-from zbxepics.pvsupport import ValQPV
 
 
 class ZabbixConfigReader(object):
@@ -12,7 +11,7 @@ class ZabbixConfigReader(object):
     def get_items(self):
         return self._items
 
-    def _add_pv_item(self, hostname, pvname, interval, func=None):
+    def _add_item(self, hostname, pvname, interval, func=None):
         if (not bool(hostname)
                 or not bool(pvname)):
             logger.error('hostname or pvname is undifined.')
@@ -20,13 +19,9 @@ class ZabbixConfigReader(object):
 
         item = {}
         item['host'] = hostname
-        item['pv'] = ValQPV(pvname)
+        item['pv'] = pvname
         item['interval'] = interval
-        if isinstance(interval, (int, float)):
-            interval_ = int(interval)
-            if interval_ < 1:
-                interval_ = 1
-            item['interval'] = interval_
+        if func:
             item['func'] = func
 
         self._items.append(item)
@@ -71,8 +66,8 @@ class ZabbixConfigReaderJSON(ZabbixConfigReader):
                 for item_ in host['items']:
                     item = copy.deepcopy(default_item_)
                     item.update(item_)
-                    self._add_pv_item(host['name'], item['pv'],
-                                      item['update'], item['func'])
+                    self._add_item(host['name'], item['pv'],
+                                   item['update'], item['func'])
         except KeyError:
             logger.error('%s: %s',
                          self.__class__.__name__,
