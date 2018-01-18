@@ -6,7 +6,19 @@ record(calcout, "ioc:heartbeat")
     field(INPA, "ioc:heartbeat")
 }
 
-record(ai, "ioc:countup")
+record(ai, "ioc:ai1")
 {
-    field(DESC, "count up")
+    field(DESC, "ai")
+    field(VAL,  "1")
+}
+
+record(ao,"ioc:ao1") {
+    field(DESC, "ao")
+    field(VAL,  "1")
+}
+
+record(longout,"ioc:long1")
+{
+    field(DESC, "longout")
+    field(DTYP, "Soft Channel")
 }
