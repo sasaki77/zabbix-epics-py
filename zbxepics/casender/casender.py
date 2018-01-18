@@ -11,12 +11,18 @@ from zbxepics.casender.zbxmath import last, avg
 
 
 class ZabbixSenderItem(object):
+
+    _functions = {'min': min, 'max': max, 'avg': avg, 'last': last}
+
     def __init__(self, host, pvname, interval, func=None):
         self.host = str(host)
         self.pv = ValQPV(str(pvname))
         self.interval = interval
         if func:
-            self.func = eval(func)
+            if func in self._functions:
+                self._func = self._functions[func]
+            else:
+                raise Exception('"%s" is not support', func)
 
     def get_metrics(self):
         metrics = []
@@ -32,7 +38,7 @@ class ZabbixSenderItem(object):
                 metrics.append(m)
         else:
             vals = [v for v, t in data]
-            val = self.func(vals)
+            val = self._func(vals)
             m = ZabbixMetric(self.host, item_key, val)
             metrics.append(m)
 
