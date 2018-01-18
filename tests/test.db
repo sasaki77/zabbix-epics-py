@@ -1,23 +1,23 @@
-record(calcout, "ioc:heartbeat")
+record(calcout, "'$(head):heartbeat")
 {
     field(DESC, "1 Hz counter since startup")
     field(CALC, "(A<2147483647)?A+1:1")
     field(SCAN, "1 second")
-    field(INPA, "ioc:heartbeat")
+    field(INPA, "'$(head):heartbeat")
 }
 
-record(ai, "ioc:ai1")
+record(ai, "'$(head):ai1")
 {
     field(DESC, "ai")
     field(VAL,  "1")
 }
 
-record(ao,"ioc:ao1") {
+record(ao,"'$(head):ao1") {
     field(DESC, "ao")
     field(VAL,  "1")
 }
 
-record(longout,"ioc:long1")
+record(longout,"'$(head):long1")
 {
     field(DESC, "longout")
     field(DTYP, "Soft Channel")

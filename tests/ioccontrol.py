@@ -11,7 +11,8 @@ from zbxepics.logging import logger
 
 class IocControl(object):
 
-    def __init__(self, cpath='softIoc', arg_list=['-d', 'test.db'],
+    def __init__(self, cpath='softIoc',
+                 arg_list=['-m', 'head=ET_dummyHost', '-d', 'test.db'],
                  verbose=False):
         self.__command_path = cpath
         self.__child_env = os.environ.copy()
