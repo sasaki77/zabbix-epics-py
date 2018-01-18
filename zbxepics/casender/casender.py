@@ -17,12 +17,22 @@ class ZabbixSenderItem(object):
     def __init__(self, host, pvname, interval, func=None):
         self.host = str(host)
         self.pv = ValQPV(str(pvname))
-        self.interval = interval
-        if func:
-            if func in self._functions:
+
+        if isinstance(interval, str):
+            if not interval == 'monitor':
+                raise Exception('"%s" is not support'.format(interval))
+        elif isinstance(interval, (int, float)):
+            if interval < 1:
+                raise Exception('"interval" must be at least 1 second')
+            # Check the function
+            if func and func in self._functions:
                 self._func = self._functions[func]
             else:
-                raise Exception('"%s" is not support', func)
+                raise Exception('Invalid function (%s)', func)
+        else:
+            raise TypeError('"interval" must be a string or integer/float')
+
+        self.interval = interval
 
     def get_metrics(self):
         metrics = []
@@ -74,13 +84,9 @@ class ZabbixSenderCA(object):
 
         sender_item = ZabbixSenderItem(host, pvname, interval, func)
 
-        if isinstance(interval, str):
-            if not interval == 'monitor':
-                raise Exception('"%s" is not support'.format(interval))
+        if interval == 'monitor':
             self._monitor_items.append(sender_item)
-        elif isinstance(interval, (int, float)):
-            if interval < 1:
-                raise Exception('The interval must be at least 1 second')
+        else:
             self._interval_item_q.put((0, sender_item))
 
         return sender_item
