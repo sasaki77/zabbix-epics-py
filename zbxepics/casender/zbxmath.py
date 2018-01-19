@@ -5,4 +5,4 @@ def last(iterable):
 def avg(iterable):
     sum_ = sum(iterable)
     n = len(iterable)
-    return sum_ / n
+    return float(sum_) / n
