@@ -34,6 +34,8 @@ class ZabbixConfigReader(object):
 class ZabbixConfigReaderJSON(ZabbixConfigReader):
 
     def __init__(self, config_file):
+        super(ZabbixConfigReaderJSON, self).__init__()
+
         self.read_config(config_file)
 
     def read_config(self, config_file):
