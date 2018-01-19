@@ -68,6 +68,7 @@ class ZabbixSenderCA(object):
                                        use_config)
         self.__is_stop = threading.Event()
         self.__stop_request = False
+        self._is_running = False
         self._processed = 0
         self._failed = 0
         self._total = 0
@@ -128,6 +129,8 @@ class ZabbixSenderCA(object):
             # Do not start if items is empty
             raise Exception('Sender process have no items.')
 
+        self._is_running = True
+
         self.__is_stop.clear()
         try:
             while not self.__stop_request:
@@ -151,6 +154,8 @@ class ZabbixSenderCA(object):
             self.__stop_request = False
             self.__is_stop.set()
 
+        self._is_running = False
+
     def stop(self):
         """Stops the run loop."""
         self.__stop_request = True
@@ -167,3 +172,7 @@ class ZabbixSenderCA(object):
     @property
     def total(self):
         return self._total
+
+    @property
+    def is_running(self):
+        return self._is_running
