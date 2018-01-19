@@ -33,12 +33,10 @@ class TestSenderMonitorItem(unittest.TestCase):
         metrics = item.get_metrics()
         self.assertEqual(len(metrics), 10)
 
-        index = 0
-        for zm in metrics:
+        for (zm, tval) in zip(metrics, test_vals):
             self.assertEqual(zm.host, 'host1')
             self.assertEqual(zm.key, 'EPICS[ET_dummyHost:long1]')
-            self.assertEqual(zm.value, str(test_vals[index]))
-            index += 1
+            self.assertEqual(zm.value, str(tval))
 
 
 def main():
