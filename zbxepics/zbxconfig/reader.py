@@ -37,38 +37,33 @@ class ZabbixConfigReaderJSON(ZabbixConfigReader):
         self.read_config(config_file)
 
     def read_config(self, config_file):
-        try:
-            self._items = []
-            with open(config_file, 'r') as f:
-                json_data = json.load(f)
+        self._items = []
+        with open(config_file, 'r') as f:
+            json_data = json.load(f)
 
-            # Read default configuration
-            default_host = {}
-            default_item = {}
-            if 'default' in json_data:
-                if 'host' in json_data['default']:
-                    default_host = json_data['default']['host']
-                if 'item' in default_host:
-                    default_item = default_host['item']
+        # Read default configuration
+        default_host = {}
+        default_item = {}
+        if 'default' in json_data:
+            if 'host' in json_data['default']:
+                default_host = json_data['default']['host']
+            if 'item' in default_host:
+                default_item = default_host['item']
 
-            # Read configuration
-            for host_ in json_data['hosts']:
-                host = copy.deepcopy(default_host)
-                host.update(host_)
-                if host['items'] is None:
-                    continue
+        # Read configuration
+        for host_ in json_data['hosts']:
+            host = copy.deepcopy(default_host)
+            host.update(host_)
+            if host['items'] is None:
+                continue
 
-                default_item_ = copy.deepcopy(default_item)
-                if 'default' in host:
-                    if 'item' in host['default']:
-                        default_item_.update(host['default']['item'])
+            default_item_ = copy.deepcopy(default_item)
+            if 'default' in host:
+                if 'item' in host['default']:
+                    default_item_.update(host['default']['item'])
 
-                for item_ in host['items']:
-                    item = copy.deepcopy(default_item_)
-                    item.update(item_)
-                    self._add_item(host['name'], item['pv'],
-                                   item['update'], item['func'])
-        except KeyError:
-            logger.error('%s: %s',
-                         self.__class__.__name__,
-                         'Item key is too few.')
+            for item_ in host['items']:
+                item = copy.deepcopy(default_item_)
+                item.update(item_)
+                self._add_item(host['name'], item['pv'],
+                               item['update'], item['func'])
