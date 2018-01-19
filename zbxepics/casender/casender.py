@@ -126,10 +126,7 @@ class ZabbixSenderCA(object):
         if (not self._monitor_items
                 and self._interval_item_q.empty()):
             # Do not start if items is empty
-            logger.error('%s: %s',
-                         self.__class__.__name__,
-                         'Sender process have no items.')
-            return
+            raise Exception('Sender process have no items.')
 
         self.__is_stop.clear()
         try:
