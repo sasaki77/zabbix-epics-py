@@ -7,7 +7,6 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
-import zbxepicstests
 from ioccontrol import IocControl
 from server import SimpleZabbixServerHandler
 from socketserver import TCPServer
@@ -18,12 +17,13 @@ from zbxepics.pvsupport import ValQPV
 class TestZabbixSenderCA(unittest.TestCase):
 
     def setUp(self):
-        self.__setup_epics_env()
-        self.__iocprocess = IocControl()
+        ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', 'test.db']
+        self.__iocprocess = IocControl(arg_list=ioc_arg_list)
         self.__iocprocess.start()
+        self.__setup_epics_env()
 
-        self._zbx_host = zbxepicstests.zbx_host
-        self._zbx_port = zbxepicstests.zbx_port
+        self._zbx_host = 'localhost'
+        self._zbx_port = 30051
         server_address = (self._zbx_host, self._zbx_port)
         handler = SimpleZabbixServerHandler
 
@@ -42,12 +42,9 @@ class TestZabbixSenderCA(unittest.TestCase):
         self.__zbxserver.shutdown()
 
     def __setup_epics_env(self):
-        sport = str(zbxepicstests.ioc_server_port)
-        dport = str(zbxepicstests.ioc_repeater_port)
+        sport = str(self.__iocprocess.server_port)
         os.putenv('EPICS_CA_AUTO_ADDR_LIST', 'NO')
-        os.putenv('EPICS_CA_ADDR_LIST', 'localhost')
-        os.putenv('EPICS_CA_SERVER_PORT', sport)
-        os.putenv('EPICS_CA_REPEATER_PORT', dport)
+        os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
 
     def __create_items(self):
         item = {}
