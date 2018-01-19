@@ -4,7 +4,6 @@
 from socketserver import TCPServer, StreamRequestHandler
 import struct
 import json
-import zbxepicstests
 try:
     import threading
 except ImportError:
@@ -77,8 +76,8 @@ class SimpleZabbixServerHandler(StreamRequestHandler):
 
 
 def main():
-    host = zbxepicstests.zbx_host
-    port = zbxepicstests.zbx_port
+    host = 'localhost'
+    port = 30051
     handler = SimpleZabbixServerHandler
 
     server = TCPServer((host, port), handler)

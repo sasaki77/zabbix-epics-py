@@ -5,11 +5,12 @@ import os
 import subprocess
 import atexit
 import time
-import zbxepicstests
 from zbxepics.logging import logger
 
 
 class IocControl(object):
+    server_port = 12782
+    repeater_port = 12783
 
     def __init__(self, cpath='softIoc',
                  arg_list=['-m', 'head=ET_dummyHost', '-d', 'test.db'],
@@ -43,19 +44,16 @@ class IocControl(object):
             self.__devnull.close()
 
     def __setup(self):
-        sport = str(zbxepicstests.ioc_server_port)
-        dport = str(zbxepicstests.ioc_repeater_port)
         self.__child_env['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
         self.__child_env['EPICS_CA_ADDR_LIST'] = 'localhost'
-        self.__child_env['EPICS_CA_SERVER_PORT'] = sport
-        self.__child_env['EPICS_CA_REPEATER_PORT'] = dport
+        self.__child_env['EPICS_CA_SERVER_PORT'] = str(self.server_port)
+        self.__child_env['EPICS_CA_REPEATER_PORT'] = str(self.repeater_port)
 
 
 def main():
-    ioc = IocControl(verbose=zbxepicstests.verbose)
+    ioc = IocControl(verbose=True)
     ioc.start()
     try:
-        count = 0
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
