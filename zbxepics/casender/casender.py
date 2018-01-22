@@ -58,7 +58,7 @@ class ZabbixSenderCA(object):
     """Docstring for ZabbixSenderCA. """
 
     def __init__(self, zabbix_server='127.0.0.1', zabbix_port=10051,
-                 use_config=None, items=None):
+                 use_config=None, items=None, send_callback=None):
         self._monitor_items = []
         self._interval_item_q = PriorityPeekQueue()
         self.zbx_sender = ZabbixSender(zabbix_server,
@@ -67,9 +67,10 @@ class ZabbixSenderCA(object):
         self.__is_stop = threading.Event()
         self.__stop_request = False
         self._is_running = False
-        self._processed = 0
-        self._failed = 0
-        self._total = 0
+
+        self.send_callback = None
+        if send_callback:
+            self.send_callback = send_callback
 
         if isinstance(items, (tuple, list)):
             for item in items:
@@ -117,9 +118,9 @@ class ZabbixSenderCA(object):
         logger.debug('%s: %s',
                      self.__class__.__name__,
                      result)
-        self._processed += result.processed
-        self._failed += result.failed
-        self._total += result.total
+
+        if hasattr(self.send_callback, '__call__'):
+            self.send_callback(metrics=metrics, result=result)
 
     def run(self):
         if (not self._monitor_items
@@ -158,18 +159,6 @@ class ZabbixSenderCA(object):
         """Stops the run loop."""
         self.__stop_request = True
         self.__is_stop.wait()
-
-    @property
-    def processed(self):
-        return self._processed
-
-    @property
-    def failed(self):
-        return self._failed
-
-    @property
-    def total(self):
-        return self._total
 
     @property
     def is_running(self):
