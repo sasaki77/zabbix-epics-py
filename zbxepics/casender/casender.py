@@ -90,18 +90,18 @@ class ZabbixSenderCA(object):
 
         return sender_item
 
-    def __get_interval_tasks(self):
-        tasks = []
+    def __get_interval_items(self):
+        items = []
         if not self._interval_item_q.empty():
             now = int(time.time())
             while now >= self._interval_item_q.peek()[0]:
                 _, item = self._interval_item_q.get()
-                tasks.append(item)
+                items.append(item)
                 # Rescedule
                 runtime = now + item.interval
                 self._interval_item_q.put((runtime, item))
 
-        return tasks
+        return items
 
     def _create_metrics(self, items):
         metrics = []
@@ -132,11 +132,11 @@ class ZabbixSenderCA(object):
         self.__is_stop.clear()
         try:
             while not self.__stop_request:
-                item_tasks = []
-                item_tasks.extend(self._monitor_items)
-                item_tasks.extend(self.__get_interval_tasks())
+                items = []
+                items.extend(self._monitor_items)
+                items.extend(self.__get_interval_items())
 
-                metrics = self._create_metrics(item_tasks)
+                metrics = self._create_metrics(items)
 
                 # Send packet to Zabbix server.
                 if metrics:
