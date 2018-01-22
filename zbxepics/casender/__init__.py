@@ -1,1 +1,2 @@
-from .casender import ZabbixSenderItem, ZabbixSenderCA
+from .casender import ZabbixSenderCA
+from .item import ZabbixSenderItem
