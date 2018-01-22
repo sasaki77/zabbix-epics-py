@@ -7,11 +7,11 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
+from epics import caput
 from ioccontrol import IocControl
 from server import SimpleZabbixServerHandler
 from socketserver import TCPServer
 from zbxepics.casender import ZabbixSenderCA
-from zbxepics.pvsupport import ValQPV
 
 
 class TestZabbixSenderCA(unittest.TestCase):
@@ -31,11 +31,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         th_server = threading.Thread(target=self.__zbxserver.serve_forever)
         th_server.start()
 
-        self.__items = self.__create_items()
-        self.__sender = ZabbixSenderCA(self._zbx_host, self._zbx_port,
-                                       items=self.__items)
-        th_sender = threading.Thread(target=self.__sender.run)
-        th_sender.start()
+        self.send_events = 0
 
     def tearDown(self):
         self.__iocprocess.stop()
@@ -46,26 +42,29 @@ class TestZabbixSenderCA(unittest.TestCase):
         os.putenv('EPICS_CA_AUTO_ADDR_LIST', 'NO')
         os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
 
-    def __create_items(self):
-        item = {}
-        item['host'] = 'dummyServerHost'
-        item['pv'] = ValQPV('ioc:countup')
-        item['interval'] = 'monitor'
-
-        return (item,)
+    def _send_metrics(self, metrics=None, result=None):
+        self.send_events += result.processed
 
     def test_sender_ca(self):
-        pv = self.__items[0]['pv']
+        item = {}
+        item['host'] = 'dummyServerHost'
+        item['pv'] = 'ET_dummyHost:long1'
+        item['interval'] = 'monitor'
+
+        sender = ZabbixSenderCA(self._zbx_host, self._zbx_port,
+                                send_callback=self._send_metrics)
+        sender.add_item(item)
+        th_sender = threading.Thread(target=sender.run)
+        th_sender.start()
+
         for i in range(5):
-            pv.put(i, wait=True)
-            time.sleep(1)
+            caput(item['pv'], i, wait=True)
+        time.sleep(1)
 
-        self.__sender.stop()
-        send_total = self.__sender.total
+        sender.stop()
 
-        # We get 5 events: at connection, then at 5 value changes (puts)
-        self.assertTrue(send_total == 5,
-                        'Send total: %d/5'.format(send_total))
+        # We get 5 events
+        self.assertEqual(self.send_events, 5)
 
 
 def main():
