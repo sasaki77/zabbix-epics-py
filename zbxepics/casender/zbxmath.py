@@ -6,3 +6,9 @@ def avg(iterable):
     sum_ = sum(iterable)
     n = len(iterable)
     return float(sum_) / n
+
+
+functions = {'min': min,
+             'max': max,
+             'avg': avg,
+             'last': last}

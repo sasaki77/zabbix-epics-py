@@ -7,12 +7,10 @@ from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 from zbxepics.logging import logger
 from zbxepics.pvsupport import ValQPV
 from zbxepics.casender.peekqueue import PriorityPeekQueue
-from zbxepics.casender.zbxmath import last, avg
+from zbxepics.casender.zbxmath import functions
 
 
 class ZabbixSenderItem(object):
-
-    _functions = {'min': min, 'max': max, 'avg': avg, 'last': last}
 
     def __init__(self, host, pvname, interval, func=None):
         self.host = str(host)
@@ -25,8 +23,8 @@ class ZabbixSenderItem(object):
             if interval < 1:
                 raise Exception('"interval" must be at least 1 second')
             # Check the function
-            if func and func in self._functions:
-                self._func = self._functions[func]
+            if func and func in functions:
+                self._func = functions[func]
             else:
                 raise Exception('Invalid function (%s)', func)
         else:
