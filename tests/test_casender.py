@@ -80,6 +80,14 @@ class TestZabbixSenderCA(unittest.TestCase):
         self.assertEqual(interval_item.pv.pvname, 'ET_dummyHost:ai1')
         self.assertEqual(interval_item.interval, 10)
 
+    def test_add_item_err(self):
+        item = {'host': 'dummyServerHost',
+                'pv': 'ET_dummyHost:ai1'}
+        sender = ZabbixSenderCA('testserver.com', 12345)
+
+        with self.assertRaises(KeyError):
+            sender.add_item(item)
+
     def test_run_without_items(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
         with self.assertRaises(Exception):
