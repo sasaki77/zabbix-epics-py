@@ -10,8 +10,8 @@ from zbxepics.pvsupport import ValQPV
 
 def setup_epics_env():
     sport = str(IocControl.server_port)
-    os.putenv('EPICS_CA_AUTO_ADDR_LIST', 'NO')
-    os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
+    os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
+    os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
 
 
 class TestValQPV(unittest.TestCase):
