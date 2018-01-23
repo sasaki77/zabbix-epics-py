@@ -5,7 +5,9 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
-from zbxepics.casender import ZabbixSenderItem, ZabbixSenderCA
+from zbxepics.casender import ZabbixSenderCA
+from zbxepics.casender import ZabbixSenderItem
+from zbxepics.casender import ZabbixSenderItemInterval
 
 
 class TestZabbixSenderCAInit(unittest.TestCase):
@@ -29,7 +31,6 @@ class TestZabbixSenderCAInit(unittest.TestCase):
         self.assertIsInstance(mon_item, ZabbixSenderItem)
         self.assertEqual(mon_item.host, 'dummyServerHost')
         self.assertEqual(mon_item.pv.pvname, 'ET_dummyHost:ai1')
-        self.assertEqual(mon_item.interval, 'monitor')
 
     def test_add_interval_item(self):
         item = {'host': 'dummyServerHost',
@@ -40,7 +41,7 @@ class TestZabbixSenderCAInit(unittest.TestCase):
         sender = ZabbixSenderCA('testserver.com', 12345)
         interval_item = sender.add_item(item)
 
-        self.assertIsInstance(interval_item, ZabbixSenderItem)
+        self.assertIsInstance(interval_item, ZabbixSenderItemInterval)
         self.assertEqual(interval_item.host, 'dummyServerHost')
         self.assertEqual(interval_item.pv.pvname, 'ET_dummyHost:ai1')
         self.assertEqual(interval_item.interval, 10)

@@ -7,6 +7,7 @@ from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 from zbxepics.logging import logger
 from zbxepics.casender.peekqueue import PriorityPeekQueue
 from zbxepics.casender.item import ZabbixSenderItem
+from zbxepics.casender.item import ZabbixSenderItemInterval
 
 
 class ZabbixSenderCA(object):
@@ -36,13 +37,15 @@ class ZabbixSenderCA(object):
         host = item['host']
         pvname = item['pv']
         interval = item['interval']
-        func = item['func'] if 'func' in item else None
 
-        sender_item = ZabbixSenderItem(host, pvname, interval, func)
-
+        sender_item = None
         if interval == 'monitor':
+            sender_item = ZabbixSenderItem(host, pvname)
             self._monitor_items.append(sender_item)
         else:
+            func = item['func']
+            sender_item = ZabbixSenderItemInterval(host, pvname,
+                                                   interval, func)
             self._interval_item_q.put((0, sender_item))
 
         return sender_item
@@ -64,8 +67,11 @@ class ZabbixSenderCA(object):
         metrics = []
 
         for item in items:
-            m = item.get_metrics()
-            metrics.extend(m)
+            try:
+                zm = item.get_metrics()
+                metrics.extend(zm)
+            except Exception:
+                pass
 
         return metrics
 

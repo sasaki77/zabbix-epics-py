@@ -5,7 +5,7 @@ import os
 import time
 from epics import caput
 from ioccontrol import IocControl
-from zbxepics.casender import ZabbixSenderItem
+from zbxepics.casender import ZabbixSenderItemInterval
 from zbxepics.casender.peekqueue import PriorityPeekQueue
 
 
@@ -26,7 +26,8 @@ class TestSenderIntervalItem(unittest.TestCase):
         os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
 
     def test_interval_item_metrics(self):
-        item = ZabbixSenderItem('host1', 'ET_dummyHost:long1', 10, 'last')
+        item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:long1',
+                                        10, 'last')
 
         for val in range(10):
             caput('ET_dummyHost:long1', val, wait=True)

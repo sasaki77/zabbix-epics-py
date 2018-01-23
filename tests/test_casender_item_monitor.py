@@ -24,7 +24,7 @@ class TestSenderMonitorItem(unittest.TestCase):
         os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
 
     def test_monitor_item_metrics(self):
-        item = ZabbixSenderItem('host1', 'ET_dummyHost:long1', 'monitor')
+        item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
 
         test_vals = [v for v in range(10)]
         for val in test_vals:
