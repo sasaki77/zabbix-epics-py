@@ -1,16 +1,50 @@
 #!/usr/bin/env python
 
 import unittest
+import os
+import time
 try:
     import threading
 except ImportError:
     import dummy_threading as threading
+from epics import ca, caput
+from ioccontrol import IocControl
+from server import SimpleZabbixServerHandler
+from socketserver import TCPServer
 from zbxepics.casender import ZabbixSenderCA
 from zbxepics.casender import ZabbixSenderItem
 from zbxepics.casender import ZabbixSenderItemInterval
 
 
-class TestZabbixSenderCAInit(unittest.TestCase):
+def setup_epics_env():
+    sport = str(IocControl.server_port)
+    os.putenv('EPICS_CA_AUTO_ADDR_LIST', 'NO')
+    os.putenv('EPICS_CA_ADDR_LIST', 'localhost:{}'.format(sport))
+
+
+class TestZabbixSenderCA(unittest.TestCase):
+
+    def __start_ioc(self):
+        ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', 'test.db']
+        self.__iocprocess = IocControl(arg_list=ioc_arg_list)
+        self.__iocprocess.start()
+
+    def __stop_ioc(self):
+        ca.finalize_libca()
+        self.__iocprocess.stop()
+
+    def __start_server(self):
+        self._zbx_host = 'localhost'
+        self._zbx_port = 30051
+        server_address = (self._zbx_host, self._zbx_port)
+        handler = SimpleZabbixServerHandler
+
+        self.__zbxserver = TCPServer(server_address, handler)
+        th_server = threading.Thread(target=self.__zbxserver.serve_forever)
+        th_server.start()
+
+    def __stop_server(self):
+        self.__zbxserver.shutdown()
 
     def test_init(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
@@ -68,8 +102,40 @@ class TestZabbixSenderCAInit(unittest.TestCase):
 
         self.assertFalse(sender.is_running)
 
+    def _send_metrics(self, metrics=None, result=None):
+        self.send_events += result.processed
+
+    def test_sender_ca(self):
+        item = {}
+        item['host'] = 'dummyServerHost'
+        item['pv'] = 'ET_dummyHost:long1'
+        item['interval'] = 'monitor'
+
+        self.__start_ioc()
+        self.__start_server()
+        self.send_events = 0
+
+        sender = ZabbixSenderCA(self._zbx_host, self._zbx_port,
+                                send_callback=self._send_metrics)
+        sender.add_item(item)
+        th_sender = threading.Thread(target=sender.run)
+        th_sender.start()
+
+        for i in range(5):
+            caput(item['pv'], i, wait=True)
+        time.sleep(1)
+
+        sender.stop()
+
+        # We get 5 events
+        self.assertEqual(self.send_events, 5)
+
+        self.__stop_ioc()
+        self.__stop_server()
+
 
 def main():
+    setup_epics_env()
     unittest.main(verbosity=2)
 
 
