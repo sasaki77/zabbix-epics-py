@@ -1,0 +1,36 @@
+{
+  "hosts": [
+    {
+      "default": {
+          "item": {
+            "update": 10,
+            "func": "avg"
+          }
+      },
+      "name": "dummyServerHost", 
+      "items": [
+        {
+          "name": "EPICS Heart beat",
+          "pv": "ET_dummyHost:heartbeat", 
+          "update": "monitor"
+        },
+        {
+          "name": "EPICS ai1",
+          "update": 5,
+          "pv": "ET_dummyHost:ai1"
+        },
+        {
+          "name": "EPICS ao1",
+          "pv": "ET_dummyHost:ao1",
+          "func": "max"
+        },
+        {
+          "name": "EPICS long1",
+          "update": 20,
+          "pv": "ET_dummyHost:long1",
+          "func": "last"
+        }
+      ]
+    }
+  ]
+}
