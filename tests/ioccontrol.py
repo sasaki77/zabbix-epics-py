@@ -39,6 +39,7 @@ class IocControl(object):
         """Stops the test IOC"""
         if self.__process:
             self.__process.stdin.close()
+            self.__process.wait()
             self.__process = None
         if self.__devnull:
             self.__devnull.close()
