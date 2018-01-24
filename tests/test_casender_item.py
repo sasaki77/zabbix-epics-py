@@ -59,12 +59,13 @@ class TestZabbixSenderItem(unittest.TestCase):
     def test_monitor_item_metrics(self):
         item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
 
-        test_vals = [v for v in range(10)]
+        test_vals = [v for v in range(5)]
         for val in test_vals:
             caput('ET_dummyHost:long1', val, wait=True)
+        time.sleep(.05)
 
         metrics = item.get_metrics()
-        self.assertEqual(len(metrics), 10)
+        self.assertEqual(len(metrics), 5)
 
         for (zm, tval) in zip(metrics, test_vals):
             self.assertEqual(zm.host, item.host)
@@ -75,11 +76,13 @@ class TestZabbixSenderItem(unittest.TestCase):
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:long1',
                                         10, 'last')
 
-        for val in range(10):
+        runtime = int(time.time()) + item.interval
+
+        for val in range(5):
             caput('ET_dummyHost:long1', val, wait=True)
+        time.sleep(.05)
 
         # Wait until runtime is reached
-        runtime = int(time.time()) + item.interval
         while True:
             now = int(time.time())
             if now >= runtime:
@@ -92,7 +95,7 @@ class TestZabbixSenderItem(unittest.TestCase):
         for zm in metrics:
             self.assertEqual(zm.host, item.host)
             self.assertEqual(zm.key, item.item_key)
-            self.assertEqual(zm.value, '9')
+            self.assertEqual(zm.value, '4')
 
 
 def main():
