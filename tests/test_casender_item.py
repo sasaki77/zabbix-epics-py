@@ -11,20 +11,18 @@ from zbxepics.pvsupport import ValQPV
 from zbxepics.casender.peekqueue import PriorityPeekQueue
 
 
-def setup_epics_env():
-    sport = str(IocControl.server_port)
-    os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
-    os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
-
-
 class TestZabbixSenderItem(unittest.TestCase):
 
-    def __start_ioc(self):
+    def setUp(self):
         ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', 'test.db']
         self.__iocprocess = IocControl(arg_list=ioc_arg_list)
         self.__iocprocess.start()
+        sport = str(IocControl.server_port)
+        os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
+        os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
+        ca.initialize_libca()
 
-    def __stop_ioc(self):
+    def tearDown(self):
         ca.finalize_libca()
         self.__iocprocess.stop()
 
@@ -59,8 +57,6 @@ class TestZabbixSenderItem(unittest.TestCase):
                                      5, 'add')
 
     def test_monitor_item_metrics(self):
-        self.__start_ioc()
-
         item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
 
         test_vals = [v for v in range(10)]
@@ -75,11 +71,7 @@ class TestZabbixSenderItem(unittest.TestCase):
             self.assertEqual(zm.key, item.item_key)
             self.assertEqual(zm.value, str(tval))
 
-        self.__stop_ioc()
-
     def test_interval_item_metrics(self):
-        self.__start_ioc()
-
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:long1',
                                         10, 'last')
 
@@ -102,11 +94,8 @@ class TestZabbixSenderItem(unittest.TestCase):
             self.assertEqual(zm.key, item.item_key)
             self.assertEqual(zm.value, '9')
 
-        self.__stop_ioc()
-
 
 def main():
-    setup_epics_env()
     unittest.main(verbosity=2)
 
 

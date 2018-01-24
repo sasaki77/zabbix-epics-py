@@ -16,20 +16,18 @@ from zbxepics.casender import ZabbixSenderItem
 from zbxepics.casender import ZabbixSenderItemInterval
 
 
-def setup_epics_env():
-    sport = str(IocControl.server_port)
-    os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
-    os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
-
-
 class TestZabbixSenderCA(unittest.TestCase):
 
-    def __start_ioc(self):
+    def setUp(self):
         ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', 'test.db']
         self.__iocprocess = IocControl(arg_list=ioc_arg_list)
         self.__iocprocess.start()
+        sport = str(IocControl.server_port)
+        os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
+        os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
+        ca.initialize_libca()
 
-    def __stop_ioc(self):
+    def tearDown(self):
         ca.finalize_libca()
         self.__iocprocess.stop()
 
@@ -119,7 +117,6 @@ class TestZabbixSenderCA(unittest.TestCase):
         item['pv'] = 'ET_dummyHost:long1'
         item['interval'] = 'monitor'
 
-        self.__start_ioc()
         self.__start_server()
         self.send_events = 0
 
@@ -138,12 +135,10 @@ class TestZabbixSenderCA(unittest.TestCase):
         # We get 5 events
         self.assertEqual(self.send_events, 5)
 
-        self.__stop_ioc()
         self.__stop_server()
 
 
 def main():
-    setup_epics_env()
     unittest.main(verbosity=2)
 
 
