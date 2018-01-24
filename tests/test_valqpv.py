@@ -31,11 +31,6 @@ class TestValQPV(unittest.TestCase):
         with self.assertRaises(Exception):
             ValQPV()
 
-    def test_queue_none(self):
-        pv = ValQPV('ET_dummyHost:ai1')
-        vals = pv.get_q_all()
-        self.assertEqual(vals, [])
-
     def test_get_q_all(self):
         pv = ValQPV('ET_dummyHost:long1')
         pv.wait_for_connection()
@@ -48,6 +43,9 @@ class TestValQPV(unittest.TestCase):
         data = pv.get_q_all()
         vals = [v for v, t in data]
         self.assertEqual(vals, test_vals)
+
+        empty_data = pv.get_q_all()
+        self.assertEqual(empty_data, [])
 
 
 def main():
