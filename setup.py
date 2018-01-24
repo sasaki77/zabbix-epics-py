@@ -2,11 +2,11 @@
 
 from distutils.core import setup
 
-setup(name="zbxepics",
-      version="0.0.1",
-      description="Zabbix-EPICS for Python",
-      author="Masaya Hirose",
-      author_email="kan-hiro@post.kek.jp",
-      packages=["zbxepics", "zbxepics.casender",
-                "zbxepics.logging", "zbxepics.pvsupport",
-                "zbxepics.zbxconfig"])
+setup(name='zbxepics',
+      version='0.0.1',
+      description='Zabbix-EPICS for Python',
+      author='Masaya Hirose',
+      author_email='kan-hiro@post.kek.jp',
+      packages=['zbxepics', 'zbxepics.casender',
+                'zbxepics.logging', 'zbxepics.pvsupport',
+                'zbxepics.zbxconfig'])
