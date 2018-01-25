@@ -37,6 +37,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         server_address = (self._zbx_host, self._zbx_port)
         handler = SimpleZabbixServerHandler
 
+        TCPServer.allow_reuse_address = True
         self.__zbxserver = TCPServer(server_address, handler)
         th_server = threading.Thread(target=self.__zbxserver.serve_forever)
         th_server.start()
