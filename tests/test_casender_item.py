@@ -9,6 +9,7 @@ from zbxepics.casender import ZabbixSenderItem
 from zbxepics.casender import ZabbixSenderItemInterval
 from zbxepics.pvsupport import ValQPV
 from zbxepics.casender.peekqueue import PriorityPeekQueue
+from zbxepics.casender.zbxmath import functions
 
 
 class TestZabbixSenderItem(unittest.TestCase):
@@ -33,9 +34,6 @@ class TestZabbixSenderItem(unittest.TestCase):
         self.assertIsInstance(item.pv, ValQPV)
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
 
-        metrics = item.get_metrics()
-        self.assertEqual(len(metrics), 0)
-
     def test_init_interval(self):
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
                                         5, 'last')
@@ -44,18 +42,14 @@ class TestZabbixSenderItem(unittest.TestCase):
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
         self.assertEqual(item.interval, 5)
 
-        with self.assertRaises(Exception):
-            item.get_metrics()
-
-    def test_init_err_short_interval(self):
-        with self.assertRaises(Exception):
-            ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
-                                     0.9, 'last')
-
-    def test_init_err_invalid_func(self):
-        with self.assertRaises(KeyError):
-            ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
-                                     5, 'add')
+    def test_init_interval_default(self):
+        item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
+                                        0.9, 'add')
+        default_interval = ZabbixSenderItemInterval.DEFAULT_INTERVAL
+        self.assertEqual(item.interval, default_interval)
+        default_function = ZabbixSenderItemInterval.DEFAULT_FUNCTION
+        func = functions[default_function]
+        self.assertEqual(item.function, func)
 
     def test_monitor_item_metrics(self):
         item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
