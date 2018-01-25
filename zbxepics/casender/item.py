@@ -23,21 +23,28 @@ class ZabbixSenderItem(object):
 
 
 class ZabbixSenderItemInterval(ZabbixSenderItem):
+    DEFAULT_INTERVAL = 30.0
+    DEFAULT_FUNCTION = 'last'
 
-    def __init__(self, host, pvname, interval, func='last'):
+    def __init__(self, host, pvname, interval=None, function=None):
         super(ZabbixSenderItemInterval, self).__init__(host, pvname)
 
-        self.interval = float(interval)
-        if self.interval < 1.0:
-            raise Exception('"interval" must be at least 1 second')
+        self.interval = interval
+        if (self.interval is None
+                or self.interval < 1.0):
+            self.interval = self.DEFAULT_INTERVAL
 
-        self._func = functions[func]
+        func = function
+        if (func is None
+                or func not in functions):
+            func = self.DEFAULT_FUNCTION
+        self.function = functions[func]
 
     def get_metrics(self):
         data = self.pv.get_q_all()
 
         vals = [v for v, t in data]
-        val = self._func(vals)
+        val = self.function(vals)
 
         zm = ZabbixMetric(self.host, self.item_key, val)
 
