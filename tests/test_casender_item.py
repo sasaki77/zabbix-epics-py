@@ -3,7 +3,7 @@
 import unittest
 import os
 import time
-from epics import ca, caput
+from epics import ca
 from ioccontrol import IocControl
 from zbxepics.casender import ZabbixSenderItem
 from zbxepics.casender import ZabbixSenderItemInterval
@@ -59,9 +59,10 @@ class TestZabbixSenderItem(unittest.TestCase):
     def test_monitor_item_metrics(self):
         item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
 
+        pv = item.pv
         test_vals = [v for v in range(5)]
         for val in test_vals:
-            caput('ET_dummyHost:long1', val, wait=True)
+            pv.put(val, wait=True)
         time.sleep(.05)
 
         metrics = item.get_metrics()
@@ -78,8 +79,9 @@ class TestZabbixSenderItem(unittest.TestCase):
 
         runtime = int(time.time()) + item.interval
 
+        pv = item.pv
         for val in range(5):
-            caput('ET_dummyHost:long1', val, wait=True)
+            pv.put(val, wait=True)
         time.sleep(.05)
 
         # Wait until runtime is reached

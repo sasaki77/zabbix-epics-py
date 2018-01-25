@@ -3,7 +3,7 @@
 import unittest
 import os
 import time
-from epics import ca, caput
+from epics import ca
 from ioccontrol import IocControl
 from zbxepics.pvsupport import ValQPV
 
@@ -33,11 +33,10 @@ class TestValQPV(unittest.TestCase):
 
     def test_get_q_all(self):
         pv = ValQPV('ET_dummyHost:long1')
-        pv.wait_for_connection()
 
         test_vals = [v for v in range(5)]
         for val in test_vals:
-            caput('ET_dummyHost:long1', val, wait=True)
+            pv.put(val, wait=True)
         time.sleep(.05)
 
         data = pv.get_q_all()

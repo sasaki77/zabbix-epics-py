@@ -7,7 +7,7 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
-from epics import ca, caput
+from epics import ca
 from ioccontrol import IocControl
 from server import SimpleZabbixServerHandler
 from socketserver import TCPServer
@@ -123,12 +123,13 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         sender = ZabbixSenderCA(self._zbx_host, self._zbx_port,
                                 send_callback=self._send_metrics)
-        sender.add_item(item)
+        sender_item = sender.add_item(item)
         th_sender = threading.Thread(target=sender.run)
         th_sender.start()
 
+        pv = sender_item.pv
         for i in range(5):
-            caput(item['pv'], i, wait=True)
+            pv.put(i, wait=True)
         time.sleep(1)
 
         sender.stop()
