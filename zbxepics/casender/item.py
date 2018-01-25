@@ -42,6 +42,8 @@ class ZabbixSenderItemInterval(ZabbixSenderItem):
 
     def get_metrics(self):
         data = self.pv.get_q_all()
+        if not data:
+            return []
 
         vals = [v for v, t in data]
         val = self.function(vals)
