@@ -39,11 +39,12 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         TCPServer.allow_reuse_address = True
         self.__zbxserver = TCPServer(server_address, handler)
-        th_server = threading.Thread(target=self.__zbxserver.serve_forever)
-        th_server.start()
+        self.__th_server = threading.Thread(target=self.__zbxserver.serve_forever)
+        self.__th_server.start()
 
     def __stop_server(self):
         self.__zbxserver.shutdown()
+        self.__th_server.join()
 
     def test_init(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
@@ -103,11 +104,12 @@ class TestZabbixSenderCA(unittest.TestCase):
         th_sender = threading.Thread(target=sender.run)
         th_sender.start()
 
+        time.sleep(1)
         self.assertTrue(sender.is_running)
-
         sender.stop()
-
         self.assertFalse(sender.is_running)
+
+        th_sender.join()
 
     def _send_metrics(self, metrics=None, result=None):
         self.send_events += result.processed
@@ -132,10 +134,11 @@ class TestZabbixSenderCA(unittest.TestCase):
             pv.put(i, wait=True)
         time.sleep(1)
 
-        sender.stop()
-
         # We get 5 events
         self.assertEqual(self.send_events, 5)
+
+        sender.stop()
+        th_sender.join()
 
         self.__stop_server()
 
