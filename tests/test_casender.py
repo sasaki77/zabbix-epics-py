@@ -61,11 +61,12 @@ class TestZabbixSenderCA(unittest.TestCase):
                 'interval': 'monitor'}
 
         sender = ZabbixSenderCA('testserver.com', 12345)
-        mon_item = sender.add_item(item)
+        sender_item = sender.add_item(item)
 
-        self.assertIsInstance(mon_item, ZabbixSenderItem)
-        self.assertEqual(mon_item.host, 'dummyServerHost')
-        self.assertEqual(mon_item.pv.pvname, 'ET_dummyHost:ai1')
+        self.assertIsNotNone(sender_item)
+        self.assertIsInstance(sender_item, ZabbixSenderItem)
+        self.assertEqual(sender_item.host, 'dummyServerHost')
+        self.assertEqual(sender_item.pv.pvname, 'ET_dummyHost:ai1')
 
     def test_add_interval_item(self):
         item = {'host': 'dummyServerHost',
@@ -74,20 +75,21 @@ class TestZabbixSenderCA(unittest.TestCase):
                 'func': 'last'}
 
         sender = ZabbixSenderCA('testserver.com', 12345)
-        interval_item = sender.add_item(item)
+        sender_item = sender.add_item(item)
 
-        self.assertIsInstance(interval_item, ZabbixSenderItemInterval)
-        self.assertEqual(interval_item.host, 'dummyServerHost')
-        self.assertEqual(interval_item.pv.pvname, 'ET_dummyHost:ai1')
-        self.assertEqual(interval_item.interval, 10)
+        self.assertIsNotNone(sender_item)
+        self.assertIsInstance(sender_item, ZabbixSenderItemInterval)
+        self.assertEqual(sender_item.host, 'dummyServerHost')
+        self.assertEqual(sender_item.pv.pvname, 'ET_dummyHost:ai1')
+        self.assertEqual(sender_item.interval, 10)
 
     def test_add_item_err(self):
         item = {'host': 'dummyServerHost',
                 'pv': 'ET_dummyHost:ai1'}
         sender = ZabbixSenderCA('testserver.com', 12345)
+        sender_item = sender.add_item(item)
 
-        with self.assertRaises(KeyError):
-            sender.add_item(item)
+        self.assertIsNone(sender_item)
 
     def test_run_without_items(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
