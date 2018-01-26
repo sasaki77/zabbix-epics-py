@@ -29,6 +29,7 @@ class TestValQPV(unittest.TestCase):
 
     def test_init(self):
         pv = ValQPV('ET_dummyHost:ai1')
+        self.assertIsNotNone(pv)
         self.assertEqual(pv.pvname, 'ET_dummyHost:ai1')
 
     def test_init_with_conn(self):
