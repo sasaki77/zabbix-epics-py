@@ -24,9 +24,20 @@ class TestValQPV(unittest.TestCase):
         ca.finalize_libca()
         self.__iocprocess.stop()
 
+    def __on_connect(self, pvname=None, conn=None, chid=None, **kws):
+        self.connected = conn
+
     def test_init(self):
         pv = ValQPV('ET_dummyHost:ai1')
         self.assertEqual(pv.pvname, 'ET_dummyHost:ai1')
+
+    def test_init_with_conn(self):
+        self.connected = False
+        pv = ValQPV('ET_dummyHost:ai1',
+                    connection_callback=self.__on_connect)
+        pv.get(use_monitor=False)
+
+        self.assertTrue(self.connected)
 
     def test_init_err(self):
         with self.assertRaises(Exception):
