@@ -5,7 +5,7 @@ from zbxepics.logging import logger
 
 class ValQPV(PV):
 
-    def __init__(self, pvname='', connection_callback=None):
+    def __init__(self, pvname, connection_callback=None):
         self._q = Queue()
 
         super(ValQPV, self).__init__(pvname, callback=self._on_value_change,
