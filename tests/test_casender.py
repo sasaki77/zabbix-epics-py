@@ -19,7 +19,8 @@ from zbxepics.casender import ZabbixSenderItemInterval
 class TestZabbixSenderCA(unittest.TestCase):
 
     def setUp(self):
-        db_file = '/'.join([os.path.dirname(__file__), 'test.db'])
+        dir_path = os.path.dirname(__file__)
+        db_file = os.path.join(dir_path, 'test.db')
         ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', db_file]
         self.__iocprocess = IocControl(arg_list=ioc_arg_list)
         self.__iocprocess.start()
