@@ -6,24 +6,28 @@ from zbxepics.casender.peekqueue import PriorityPeekQueue
 
 class TestPriorityPeekQueue(unittest.TestCase):
 
+    def testA_init(self):
+        q = PriorityPeekQueue()
+        self.assertIsNotNone(q)
+
     def test_peek_queue(self):
         """
         Test for refer to elements with the highest priority
          without removing them.
         """
         q = PriorityPeekQueue()
-        q.put(1)
-        q.put(2)
-        q.put(3)
+        for val in range(5):
+            q.put(val)
 
         peek_value = q.peek()
-        self.assertEqual(peek_value, 1)
-        self.assertEqual(q.qsize(), 3)
+        self.assertEqual(peek_value, 0)
+        self.assertEqual(q.qsize(), 5)
 
     def test_peek_queue_err(self):
-        with self.assertRaises(IndexError):
-            q = PriorityPeekQueue()
-            q.peek()
+        q = PriorityPeekQueue()
+        peek_value = q.peek()
+
+        self.assertIsNone(peek_value)
 
 
 def main():

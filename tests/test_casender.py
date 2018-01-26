@@ -47,7 +47,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         self.__zbxserver.shutdown()
         self.__th_server.join()
 
-    def test_init(self):
+    def testA_init(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
 
         zbx_sender = sender.zbx_sender
@@ -65,8 +65,6 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         self.assertIsNotNone(sender_item)
         self.assertIsInstance(sender_item, ZabbixSenderItem)
-        self.assertEqual(sender_item.host, 'dummyServerHost')
-        self.assertEqual(sender_item.pv.pvname, 'ET_dummyHost:ai1')
 
     def test_add_interval_item(self):
         item = {'host': 'dummyServerHost',
@@ -79,9 +77,6 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         self.assertIsNotNone(sender_item)
         self.assertIsInstance(sender_item, ZabbixSenderItemInterval)
-        self.assertEqual(sender_item.host, 'dummyServerHost')
-        self.assertEqual(sender_item.pv.pvname, 'ET_dummyHost:ai1')
-        self.assertEqual(sender_item.interval, 10)
 
     def test_add_item_err(self):
         item = {'host': 'dummyServerHost',
@@ -118,10 +113,9 @@ class TestZabbixSenderCA(unittest.TestCase):
         self.send_events += result.processed
 
     def test_sender_ca(self):
-        item = {}
-        item['host'] = 'dummyServerHost'
-        item['pv'] = 'ET_dummyHost:long1'
-        item['interval'] = 'monitor'
+        item = {'host': 'dummyServerHost',
+                'pv': 'ET_dummyHost:long1',
+                'interval': 'monitor'}
 
         self.__start_server()
         self.send_events = 0

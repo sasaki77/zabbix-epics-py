@@ -28,13 +28,13 @@ class TestZabbixSenderItem(unittest.TestCase):
         ca.finalize_libca()
         self.__iocprocess.stop()
 
-    def test_init_monitor(self):
+    def testA_init_monitor(self):
         item = ZabbixSenderItem('host1', 'ET_dummyHost:ai1')
         self.assertEqual(item.host, 'host1')
         self.assertIsInstance(item.pv, ValQPV)
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
 
-    def test_init_interval(self):
+    def testA_init_interval(self):
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
                                         5, 'last')
         self.assertEqual(item.host, 'host1')
@@ -42,7 +42,7 @@ class TestZabbixSenderItem(unittest.TestCase):
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
         self.assertEqual(item.interval, 5)
 
-    def test_init_interval_default(self):
+    def testA_init_interval_default(self):
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
                                         0.9, 'add')
         default_interval = ZabbixSenderItemInterval.DEFAULT_INTERVAL

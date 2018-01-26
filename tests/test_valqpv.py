@@ -27,12 +27,12 @@ class TestValQPV(unittest.TestCase):
     def __on_connect(self, pvname=None, conn=None, chid=None, **kws):
         self.connected = conn
 
-    def test_init(self):
+    def testA_init(self):
         pv = ValQPV('ET_dummyHost:ai1')
         self.assertIsNotNone(pv)
         self.assertEqual(pv.pvname, 'ET_dummyHost:ai1')
 
-    def test_init_with_conn(self):
+    def testA_init_with_conn(self):
         self.connected = False
         pv = ValQPV('ET_dummyHost:ai1',
                     connection_callback=self.__on_connect)
@@ -40,7 +40,7 @@ class TestValQPV(unittest.TestCase):
 
         self.assertTrue(self.connected)
 
-    def test_init_err(self):
+    def testA_init_err(self):
         with self.assertRaises(Exception):
             ValQPV()
 
