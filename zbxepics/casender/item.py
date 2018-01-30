@@ -29,7 +29,7 @@ class ZabbixSenderItemInterval(ZabbixSenderItem):
     def __init__(self, host, pvname, interval=None, function=None):
         super(ZabbixSenderItemInterval, self).__init__(host, pvname)
 
-        self.interval = interval
+        self.interval = float(interval)
         if (self.interval is None
                 or self.interval < 1.0):
             self.interval = self.DEFAULT_INTERVAL
