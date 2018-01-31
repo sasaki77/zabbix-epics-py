@@ -38,14 +38,16 @@ class ZabbixSenderCA(object):
             host = item['host']
             pvname = item['pv']
             interval = item['interval']
+            item_key = item['item_key']
 
             if interval == 'monitor':
-                sender_item = ZabbixSenderItem(host, pvname)
+                sender_item = ZabbixSenderItem(host, pvname, item_key)
                 self._monitor_items.append(sender_item)
             else:
                 func = item['func']
                 sender_item = ZabbixSenderItemInterval(host, pvname,
-                                                       interval, func)
+                                                       interval, func,
+                                                       item_key)
                 self._interval_item_q.put((0, sender_item))
         except Exception:
             sender_item = None

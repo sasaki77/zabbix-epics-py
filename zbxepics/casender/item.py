@@ -6,10 +6,14 @@ from zbxepics.pvsupport import ValQPV
 
 class ZabbixSenderItem(object):
 
-    def __init__(self, host, pvname):
+    def __init__(self, host, pvname, item_key=None):
         self.host = str(host)
-        self.pv = ValQPV(str(pvname))
-        self.item_key = 'EPICS[' + self.pv.pvname + ']'
+        pvname_ = str(pvname)
+        self.pv = ValQPV(pvname_)
+        if item_key:
+            self.item_key = str(item_key)
+        else:
+            self.item_key = 'EPICS[{pvname}]'.format(pvname=pvname_)
 
     def get_metrics(self):
         data = self.pv.get_q_all()
@@ -26,8 +30,10 @@ class ZabbixSenderItemInterval(ZabbixSenderItem):
     DEFAULT_INTERVAL = 30.0
     DEFAULT_FUNCTION = 'last'
 
-    def __init__(self, host, pvname, interval=None, function=None):
-        super(ZabbixSenderItemInterval, self).__init__(host, pvname)
+    def __init__(self, host, pvname,
+                 interval=None, function=None,
+                 item_key=None):
+        super(ZabbixSenderItemInterval, self).__init__(host, pvname, item_key)
 
         self.interval = float(interval)
         if (self.interval is None

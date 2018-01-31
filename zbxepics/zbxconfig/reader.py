@@ -11,7 +11,7 @@ class ZabbixConfigReader(object):
     def get_items(self):
         return self._items
 
-    def _add_item(self, hostname, pvname, interval, func=None):
+    def _add_item(self, hostname, pvname, interval, func=None, item_key=None):
         if (not bool(hostname)
                 or not bool(pvname)):
             logger.error('hostname or pvname is undifined.')
@@ -23,6 +23,7 @@ class ZabbixConfigReader(object):
         item['interval'] = interval
         if func:
             item['func'] = func
+        item['item_key'] = item_key
 
         self._items.append(item)
 
