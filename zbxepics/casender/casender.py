@@ -3,11 +3,12 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
+
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
+
 from zbxepics.logging import logger
 from zbxepics.casender.peekqueue import PriorityPeekQueue
-from zbxepics.casender.item import ZabbixSenderItem
-from zbxepics.casender.item import ZabbixSenderItemInterval
+from zbxepics.casender.item import ZabbixSenderItem, ZabbixSenderItemInterval
 
 
 class ZabbixSenderCA(object):

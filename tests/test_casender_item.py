@@ -3,10 +3,11 @@
 import unittest
 import os
 import time
+
 from epics import ca
+
 from ioccontrol import IocControl
-from zbxepics.casender import ZabbixSenderItem
-from zbxepics.casender import ZabbixSenderItemInterval
+from zbxepics.casender import ZabbixSenderItem, ZabbixSenderItemInterval
 from zbxepics.pvsupport import ValQPV
 from zbxepics.casender.peekqueue import PriorityPeekQueue
 from zbxepics.casender.zbxmath import functions

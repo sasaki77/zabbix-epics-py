@@ -7,13 +7,14 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
+
 from epics import ca
+
 from ioccontrol import IocControl
 from server import SimpleZabbixServerHandler
 from socketserver import TCPServer
 from zbxepics.casender import ZabbixSenderCA
-from zbxepics.casender import ZabbixSenderItem
-from zbxepics.casender import ZabbixSenderItemInterval
+from zbxepics.casender import ZabbixSenderItem, ZabbixSenderItemInterval
 
 
 class TestZabbixSenderCA(unittest.TestCase):

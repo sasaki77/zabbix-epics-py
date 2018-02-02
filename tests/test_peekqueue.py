@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
+
 from zbxepics.casender.peekqueue import PriorityPeekQueue
 
 

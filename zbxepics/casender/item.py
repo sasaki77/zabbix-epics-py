@@ -1,7 +1,7 @@
 from pyzabbix import ZabbixMetric
-from zbxepics.casender.zbxmath import functions
-from zbxepics.logging import logger
+
 from zbxepics.pvsupport import ValQPV
+from zbxepics.casender.zbxmath import functions
 
 
 class ZabbixSenderItem(object):
