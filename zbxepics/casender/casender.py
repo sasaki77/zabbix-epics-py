@@ -38,7 +38,10 @@ class ZabbixSenderCA(object):
             host = item['host']
             pvname = item['pv']
             interval = item['interval']
-            item_key = item['item_key']
+            if 'item_key' in item:
+                item_key = item['item_key']
+            else:
+                item_key = None
 
             if interval == 'monitor':
                 sender_item = ZabbixSenderItem(host, pvname, item_key)
