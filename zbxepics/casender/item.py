@@ -46,8 +46,10 @@ class ZabbixSenderItemInterval(ZabbixSenderItem):
             func = self.DEFAULT_FUNCTION
         self.function = functions[func]
 
+        self.__latest_pv_value = None
+
     def get_metrics(self):
-        data = self.pv.get_q_all()
+        data = self.__get_pv_values()
         if not data:
             return []
 
@@ -57,3 +59,13 @@ class ZabbixSenderItemInterval(ZabbixSenderItem):
         zm = ZabbixMetric(self.host, self.item_key, val)
 
         return [zm]
+
+    def __get_pv_values(self):
+        pv_vals = self.pv.get_q_all()
+        if pv_vals:
+            self.__latest_pv_value = pv_vals[-1]
+        else:
+            if self.pv.connected and self.__latest_pv_value:
+                pv_vals = [self.__latest_pv_value]
+
+        return pv_vals

@@ -71,7 +71,7 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def test_interval_item_metrics(self):
         item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:long1',
-                                        10, 'last')
+                                        10, 'min')
 
         runtime = int(time.time()) + item.interval
 
@@ -89,11 +89,20 @@ class TestZabbixSenderItem(unittest.TestCase):
 
         metrics = item.get_metrics()
         self.assertEqual(len(metrics), 1)
+        self.assertEqual(metrics[0].host, item.host)
+        self.assertEqual(metrics[0].key, item.item_key)
+        self.assertEqual(metrics[0].value, '0')
 
-        for zm in metrics:
-            self.assertEqual(zm.host, item.host)
-            self.assertEqual(zm.key, item.item_key)
-            self.assertEqual(zm.value, '4')
+        # When pv value has not changed,
+        # calculated with only the latest pv value.
+        metrics = item.get_metrics()
+        self.assertEqual(len(metrics), 1)
+        self.assertEqual(metrics[0].value, '4')
+
+        pv.disconnect()
+
+        metrics = item.get_metrics()
+        self.assertEqual(metrics, [])
 
 
 def main():
