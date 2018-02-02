@@ -13,7 +13,7 @@ class ZabbixSenderItem(object):
         if item_key:
             self.item_key = str(item_key)
         else:
-            self.item_key = 'EPICS[{pvname}]'.format(pvname=pvname_)
+            self.item_key = pvname_
 
     def get_metrics(self):
         data = self.pv.get_q_all()
