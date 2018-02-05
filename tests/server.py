@@ -12,6 +12,9 @@ from socketserver import TCPServer, StreamRequestHandler
 from zbxepics.logging import logger
 
 
+metrics_received = 0
+
+
 class SimpleZabbixServerHandler(StreamRequestHandler):
 
     def handle(self):
@@ -59,6 +62,9 @@ class SimpleZabbixServerHandler(StreamRequestHandler):
         seconds_spent = 0.0
         msg = ('processed: {p}; failed: {f}; total: {t}; seconds spent: {s}'
                .format(p=processed, f=failed, t=total, s=seconds_spent))
+
+        global metrics_received
+        metrics_received += total
 
         return msg
 

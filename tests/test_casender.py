@@ -7,12 +7,12 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
+from socketserver import TCPServer
 
 from epics import ca
 
+import server
 from ioccontrol import IocControl
-from server import SimpleZabbixServerHandler
-from socketserver import TCPServer
 from zbxepics.casender import ZabbixSenderCA
 from zbxepics.casender import ZabbixSenderItem, ZabbixSenderItemInterval
 
@@ -38,7 +38,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         self._zbx_host = 'localhost'
         self._zbx_port = 30051
         server_address = (self._zbx_host, self._zbx_port)
-        handler = SimpleZabbixServerHandler
+        handler = server.SimpleZabbixServerHandler
 
         TCPServer.allow_reuse_address = True
         self.__zbxserver = TCPServer(server_address, handler)
@@ -114,19 +114,14 @@ class TestZabbixSenderCA(unittest.TestCase):
 
         th_sender.join()
 
-    def _send_metrics(self, metrics=None, result=None):
-        self.send_events += result.processed
-
     def test_sender_ca(self):
         item = {'host': 'dummyServerHost',
                 'pv': 'ET_dummyHost:long1',
                 'interval': 'monitor'}
 
         self.__start_server()
-        self.send_events = 0
 
-        sender = ZabbixSenderCA(self._zbx_host, self._zbx_port,
-                                send_callback=self._send_metrics)
+        sender = ZabbixSenderCA(self._zbx_host, self._zbx_port)
         sender_item = sender.add_item(item)
         th_sender = threading.Thread(target=sender.run)
         th_sender.daemon = True
@@ -137,11 +132,10 @@ class TestZabbixSenderCA(unittest.TestCase):
             pv.put(i, wait=True)
         time.sleep(1)
 
-        # We get 5 events
-        self.assertEqual(self.send_events, 5)
-
         sender.stop()
         th_sender.join()
+
+        self.assertEqual(server.metrics_received, 5)
 
         self.__stop_server()
 
