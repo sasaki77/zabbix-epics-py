@@ -44,6 +44,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         self.__zbxserver = TCPServer(server_address, handler)
         thread_target = self.__zbxserver.serve_forever
         self.__th_server = threading.Thread(target=thread_target)
+        self.__th_server.daemon = True
         self.__th_server.start()
 
     def __stop_server(self):
@@ -103,6 +104,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         sender.add_item(item)
 
         th_sender = threading.Thread(target=sender.run)
+        th_sender.daemon = True
         th_sender.start()
 
         time.sleep(1)
@@ -127,6 +129,7 @@ class TestZabbixSenderCA(unittest.TestCase):
                                 send_callback=self._send_metrics)
         sender_item = sender.add_item(item)
         th_sender = threading.Thread(target=sender.run)
+        th_sender.daemon = True
         th_sender.start()
 
         pv = sender_item.pv
