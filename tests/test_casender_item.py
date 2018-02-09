@@ -4,13 +4,12 @@ import unittest
 import os
 import time
 
-from epics import ca
+from epics import ca, PV
 
 from ioccontrol import IocControl
-from zbxepics.casender import ZabbixSenderItem, ZabbixSenderItemInterval
-from zbxepics.pvsupport import ValQPV
-from zbxepics.casender.peekqueue import PriorityPeekQueue
-from zbxepics.casender.zbxmath import functions
+from zbxepics.casender.item import MonitorItemFactory, IntervalItemFactory
+from zbxepics.casender.item.monitoritem import MonitorItem
+from zbxepics.casender.item.intervalitem import IntervalItem
 
 
 class TestZabbixSenderItem(unittest.TestCase):
@@ -31,30 +30,39 @@ class TestZabbixSenderItem(unittest.TestCase):
         self.__iocprocess.stop()
 
     def testA_init_monitor(self):
-        item = ZabbixSenderItem('host1', 'ET_dummyHost:ai1')
+        item = (MonitorItemFactory
+                .create_monitor_item('host1', 'ET_dummyHost:ai1'))
+
+        self.assertIsInstance(item, MonitorItem)
         self.assertEqual(item.host, 'host1')
-        self.assertIsInstance(item.pv, ValQPV)
+        self.assertIsInstance(item.pv, PV)
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
 
     def testA_init_interval(self):
-        item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
-                                        5, 'last')
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:ai1',
+                                      5, 'last'))
+
+        self.assertIsInstance(item, IntervalItem)
         self.assertEqual(item.host, 'host1')
-        self.assertIsInstance(item.pv, ValQPV)
+        self.assertIsInstance(item.pv, PV)
         self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
         self.assertEqual(item.interval, 5)
 
     def testA_init_interval_default(self):
-        item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:ai1',
-                                        0.9, 'add')
-        default_interval = ZabbixSenderItemInterval.DEFAULT_INTERVAL
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:ai1'))
+
+        default_interval = IntervalItem.DEFAULT_INTERVAL
         self.assertEqual(item.interval, default_interval)
-        default_function = ZabbixSenderItemInterval.DEFAULT_FUNCTION
-        func = functions[default_function]
-        self.assertEqual(item.function, func)
+
+        functions = IntervalItemFactory.list_of_functions()
+        default_function = IntervalItemFactory.DEFAULT_FUNCTION
+        self.assertEqual(type(item), functions[default_function])
 
     def test_monitor_item_metrics(self):
-        item = ZabbixSenderItem('host1', 'ET_dummyHost:long1')
+        item = (MonitorItemFactory
+                .create_monitor_item('host1', 'ET_dummyHost:long1'))
 
         pv = item.pv
         test_vals = [v for v in range(5)]
@@ -70,38 +78,47 @@ class TestZabbixSenderItem(unittest.TestCase):
             self.assertEqual(zm.key, item.item_key)
             self.assertEqual(zm.value, str(tval))
 
-    def test_interval_item_metrics(self):
-        item = ZabbixSenderItemInterval('host1', 'ET_dummyHost:long1',
-                                        10, 'min')
+    def test_interval_item_has_last(self):
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:long1',
+                                      func='last'))
 
-        runtime = int(time.time()) + item.interval
+        self.__test_interval_item(item, range(5), '4')
 
+    def test_interval_item_has_min(self):
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:long1',
+                                      func='min'))
+
+        self.__test_interval_item(item, range(5), '0')
+
+    def test_interval_item_has_max(self):
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:long1',
+                                      func='max'))
+
+        self.__test_interval_item(item, range(5), '4')
+
+    def test_interval_item_has_avg(self):
+        item = (IntervalItemFactory
+                .create_interval_item('host1', 'ET_dummyHost:long1',
+                                      func='avg'))
+
+        self.__test_interval_item(item, range(10), '4.5')
+
+    def __test_interval_item(self, item, test_vals, result_value):
         pv = item.pv
-        for val in range(5):
+        for val in test_vals:
             pv.put(val, wait=True)
         time.sleep(.05)
-
-        # Wait until runtime is reached
-        while True:
-            now = int(time.time())
-            if now >= runtime:
-                break
-            time.sleep(1)
 
         metrics = item.get_metrics()
         self.assertEqual(len(metrics), 1)
         self.assertEqual(metrics[0].host, item.host)
         self.assertEqual(metrics[0].key, item.item_key)
-        self.assertEqual(metrics[0].value, '0')
-
-        # When pv value has not changed,
-        # calculated with only the latest pv value.
-        metrics = item.get_metrics()
-        self.assertEqual(len(metrics), 1)
-        self.assertEqual(metrics[0].value, '4')
+        self.assertEqual(metrics[0].value, result_value)
 
         pv.disconnect()
-
         metrics = item.get_metrics()
         self.assertEqual(metrics, [])
 

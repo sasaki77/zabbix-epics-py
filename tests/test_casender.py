@@ -14,7 +14,8 @@ from epics import ca
 import server
 from ioccontrol import IocControl
 from zbxepics.casender import ZabbixSenderCA
-from zbxepics.casender import ZabbixSenderItem, ZabbixSenderItemInterval
+from zbxepics.casender.item.monitoritem import MonitorItem
+from zbxepics.casender.item.intervalitem import IntervalItem
 
 
 class TestZabbixSenderCA(unittest.TestCase):
@@ -68,7 +69,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         sender_item = sender.add_item(item)
 
         self.assertIsNotNone(sender_item)
-        self.assertIsInstance(sender_item, ZabbixSenderItem)
+        self.assertIsInstance(sender_item, MonitorItem)
 
     def test_add_interval_item(self):
         item = {'host': 'dummyServerHost',
@@ -80,7 +81,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         sender_item = sender.add_item(item)
 
         self.assertIsNotNone(sender_item)
-        self.assertIsInstance(sender_item, ZabbixSenderItemInterval)
+        self.assertIsInstance(sender_item, IntervalItem)
 
     def test_add_item_err(self):
         item = {'host': 'dummyServerHost',
