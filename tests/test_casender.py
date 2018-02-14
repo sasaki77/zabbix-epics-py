@@ -51,6 +51,7 @@ class TestZabbixSenderCA(unittest.TestCase):
     def __stop_server(self):
         self.__zbxserver.shutdown()
         self.__th_server.join()
+        self.__zbxserver.server_close()
 
     def testA_init(self):
         sender = ZabbixSenderCA('testserver.com', 12345)
