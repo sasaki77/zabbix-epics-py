@@ -69,5 +69,12 @@ class ZabbixConfigReaderJSON(ZabbixConfigReader):
             for item_ in host['items']:
                 item = copy.deepcopy(default_item_)
                 item.update(item_)
+                func = None
+                if 'func' in item:
+                    func = item['func']
+                item_key = None
+                if 'item_key' in item:
+                    item_key = item['item_key']
+
                 self._add_item(host['name'], item['pv'],
-                               item['update'], item['func'])
+                               item['update'], func, item_key)
