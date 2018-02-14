@@ -31,7 +31,7 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def testA_init_monitor(self):
         item = (MonitorItemFactory
-                .create_monitor_item('host1', 'ET_dummyHost:ai1'))
+                .create_item('host1', 'ET_dummyHost:ai1'))
 
         self.assertIsInstance(item, MonitorItem)
         self.assertEqual(item.host, 'host1')
@@ -40,7 +40,7 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def testA_init_interval(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:ai1',
+                .create_item('host1', 'ET_dummyHost:ai1',
                                       5, 'last'))
 
         self.assertIsInstance(item, IntervalItem)
@@ -51,7 +51,7 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def testA_init_interval_default(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:ai1'))
+                .create_item('host1', 'ET_dummyHost:ai1'))
 
         default_interval = IntervalItem.DEFAULT_INTERVAL
         self.assertEqual(item.interval, default_interval)
@@ -62,7 +62,7 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def test_monitor_item_metrics(self):
         item = (MonitorItemFactory
-                .create_monitor_item('host1', 'ET_dummyHost:long1'))
+                .create_item('host1', 'ET_dummyHost:long1'))
 
         pv = item.pv
         test_vals = [v for v in range(5)]
@@ -80,28 +80,28 @@ class TestZabbixSenderItem(unittest.TestCase):
 
     def test_interval_item_has_last(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:long1',
+                .create_item('host1', 'ET_dummyHost:long1',
                                       func='last'))
 
         self.__test_interval_item(item, range(5), '4')
 
     def test_interval_item_has_min(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:long1',
+                .create_item('host1', 'ET_dummyHost:long1',
                                       func='min'))
 
         self.__test_interval_item(item, range(5), '0')
 
     def test_interval_item_has_max(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:long1',
+                .create_item('host1', 'ET_dummyHost:long1',
                                       func='max'))
 
         self.__test_interval_item(item, range(5), '4')
 
     def test_interval_item_has_avg(self):
         item = (IntervalItemFactory
-                .create_interval_item('host1', 'ET_dummyHost:long1',
+                .create_item('host1', 'ET_dummyHost:long1',
                                       func='avg'))
 
         self.__test_interval_item(item, range(10), '4.5')

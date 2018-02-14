@@ -5,7 +5,7 @@ import intervalitem
 class MonitorItemFactory:
 
     @classmethod
-    def create_monitor_item(cls, host, pvname, item_key=None):
+    def create_item(cls, host, pvname, item_key=None):
         return monitoritem.MonitorItem(host, pvname, item_key)
 
 
@@ -18,8 +18,8 @@ class IntervalItemFactory:
                   'avg': intervalitem.IntervalItemHasAvg}
 
     @classmethod
-    def create_interval_item(cls, host, pvname, interval=None,
-                             func=None, item_key=None):
+    def create_item(cls, host, pvname, interval=None,
+                    func=None, item_key=None):
         if (func is None
                 or func not in cls._functions):
             # Set default function
