@@ -1,5 +1,5 @@
-import monitoritem
-import intervalitem
+from . import monitoritem
+from . import intervalitem
 
 
 class MonitorItemFactory:
