@@ -78,16 +78,16 @@ class IntervalItemHasMin(IntervalItem):
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
         with self._lock:
-            self._value = value if self._value is None\
-                          else min(self._value, value)
+            self._value = (value if self._value is None
+                           else min(self._value, value))
 
 
 class IntervalItemHasMax(IntervalItem):
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
         with self._lock:
-            self._value = value if self._value is None\
-                          else max(self._value, value)
+            self._value = (value if self._value is None
+                           else max(self._value, value))
 
 
 class IntervalItemHasAvg(IntervalItem):
