@@ -13,10 +13,10 @@ class IntervalItem(object):
     def __init__(self, host, pvname, interval=None, item_key=None):
         self.host = str(host)
         pvname_ = str(pvname)
-        self.pv = PV(pvname_, callback=self._on_value_change)
-        self.item_key = item_key
-        if self.item_key is None:
-            self.item_key = pvname_
+        self.pv = PV(pvname_,
+                     connection_callback=self._on_connection_change,
+                     callback=self._on_value_change)
+        self.item_key = pvname_ if item_key is None else item_key
 
         self.interval = interval
         if self.interval is None or self.interval < 1.0:
@@ -33,6 +33,11 @@ class IntervalItem(object):
         """May be overridden by a subclass."""
         pass
 
+    def _on_connection_change(self, pvname=None, conn=None, **kws):
+        if not conn:
+            self._value = None
+            self._setup()
+
     def _on_value_change(self, value=None, timestamp=None, **kw):
         """Called when PV value changed.
 
@@ -42,24 +47,24 @@ class IntervalItem(object):
         pass
 
     def __get_value(self):
+        if not self.pv.connected:
+            return None
+
         with self._lock:
             if self._value is not None:
                 self.__last_value = self._value
                 self._value = None
                 self._setup()
 
-        if not self.pv.connected or self.__last_value is None:
-            return None
-        else:
-            return self.__last_value
+        return self.__last_value
 
     def get_metrics(self):
         value = self.__get_value()
         if value is None:
             return []
-        else:
-            zm = ZabbixMetric(self.host, self.item_key, value)
-            return [zm]
+
+        zm = ZabbixMetric(self.host, self.item_key, value)
+        return [zm]
 
 
 class IntervalItemHasLast(IntervalItem):
@@ -73,20 +78,16 @@ class IntervalItemHasMin(IntervalItem):
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
         with self._lock:
-            if self._value is None:
-                self._value = value
-            else:
-                self._value = min(self._value, value)
+            self._value = value if self._value is None\
+                          else min(self._value, value)
 
 
 class IntervalItemHasMax(IntervalItem):
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
         with self._lock:
-            if self._value is None:
-                self._value = value
-            else:
-                self._value = max(self._value, value)
+            self._value = value if self._value is None\
+                          else max(self._value, value)
 
 
 class IntervalItemHasAvg(IntervalItem):

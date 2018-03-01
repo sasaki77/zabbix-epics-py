@@ -16,7 +16,7 @@ class ZabbixSenderCA(object):
     """Docstring for ZabbixSenderCA. """
 
     def __init__(self, zabbix_server='127.0.0.1', zabbix_port=10051,
-                 use_config=None, items=None, send_callback=None):
+                 use_config=None, items=None):
         self._monitor_items = []
         self._interval_item_q = PriorityPeekQueue()
         self.zbx_sender = ZabbixSender(zabbix_server,
@@ -26,11 +26,7 @@ class ZabbixSenderCA(object):
         self.__stop_request = False
         self._is_running = False
 
-        self.send_callback = None
-        if send_callback:
-            self.send_callback = send_callback
-
-        if isinstance(items, (tuple, list)):
+        if items:
             for item in items:
                 self.add_item(item)
 
@@ -39,10 +35,7 @@ class ZabbixSenderCA(object):
             host = item['host']
             pvname = item['pv']
             interval = item['interval']
-            if 'item_key' in item:
-                item_key = item['item_key']
-            else:
-                item_key = None
+            item_key = item.get('item_key')
 
             if interval == 'monitor':
                 sender_item = (MonitorItemFactory
@@ -60,15 +53,17 @@ class ZabbixSenderCA(object):
         return sender_item
 
     def __get_interval_items(self):
+        if self._interval_item_q.empty():
+            return []
+
         items = []
-        if not self._interval_item_q.empty():
-            now = int(time.time())
-            while now >= self._interval_item_q.peek()[0]:
-                _, item = self._interval_item_q.get()
-                items.append(item)
-                # Rescedule
-                runtime = now + item.interval
-                self._interval_item_q.put((runtime, item))
+        now = int(time.time())
+        while now >= self._interval_item_q.peek()[0]:
+            _, item = self._interval_item_q.get()
+            items.append(item)
+            # Rescedule
+            runtime = now + item.interval
+            self._interval_item_q.put((runtime, item))
 
         return items
 
@@ -84,14 +79,15 @@ class ZabbixSenderCA(object):
 
         return metrics
 
-    def _send_metrics(self, metrics):
+    def _send_metrics(self, items):
+        metrics = self._create_metrics(items)
+        if not metrics:
+            return
+
         result = self.zbx_sender.send(metrics)
         logger.debug('%s: %s',
                      self.__class__.__name__,
                      result)
-
-        if hasattr(self.send_callback, '__call__'):
-            self.send_callback(metrics=metrics, result=result)
 
     def run(self):
         if (not self._monitor_items
@@ -108,11 +104,7 @@ class ZabbixSenderCA(object):
                 items.extend(self._monitor_items)
                 items.extend(self.__get_interval_items())
 
-                metrics = self._create_metrics(items)
-
-                # Send packet to Zabbix server.
-                if metrics:
-                    self._send_metrics(metrics)
+                self._send_metrics(items)
 
                 time.sleep(1)
         except Exception as err:
