@@ -20,8 +20,7 @@ class IntervalItemFactory:
     @classmethod
     def create_item(cls, host, pvname, interval=None,
                     func=None, item_key=None):
-        if (func is None
-                or func not in cls._functions):
+        if (func not in cls._functions):
             # Set default function
             func = cls.DEFAULT_FUNCTION
 
