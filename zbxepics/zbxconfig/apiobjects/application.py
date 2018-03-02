@@ -4,6 +4,16 @@ from zbxepics.logging.logger import logger
 
 
 class Application(APIObject):
+    """Application object class for ZabbixAPI.
+
+    :type application: dict
+    :param application: dict for application object.
+        :keys:
+            'name': (str)  Name of the application.
+            'host': (str)  Name of the host that the item belongs to.
+        :optional keys:
+            'new_name': (str)  New name of the application.
+    """
 
     def __init__(self, zbx_api):
         self.__host = Host(zbx_api)

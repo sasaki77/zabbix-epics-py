@@ -8,6 +8,19 @@ from zbxepics.logging.logger import logger
 
 
 class Item(APIObject):
+    """Item object class for ZabbixAPI.
+
+    :type item: dict
+    :param item:
+        :keys:
+            'key_': (string)  Item key.
+            'name': (string)  Name of the item.
+            'type': (integer)  Type of the item.
+            'value_type': (integer)  Type of information of the item.
+            'host':  (string)  Name of the host that the item belongs to.
+        :other keys:
+            See also `API` in Zabbix Documentation.
+    """
 
     def __init__(self, zbx_api):
         self.__host = Host(zbx_api)

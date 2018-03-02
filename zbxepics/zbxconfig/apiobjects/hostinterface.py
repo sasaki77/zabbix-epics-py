@@ -3,6 +3,20 @@ from .host import Host
 
 
 class HostInterface(APIObject):
+    """Host interface object class for ZabbixAPI.
+
+    type hostnames: array
+    param hostnames: Names of the host.
+
+    type dns: str
+    param dns: DNS name used by the interface.
+
+    type ip: str
+    param ip: IP address used by the interface.
+
+    type port: str
+    param port: Port number used by the interface.
+    """
 
     def __init__(self, zbx_api):
         self.__host = Host(zbx_api)

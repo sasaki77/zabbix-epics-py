@@ -4,6 +4,15 @@ from zbxepics.logging.logger import logger
 
 
 class Host(APIObject):
+    """Host object class for ZabbixAPI.
+
+    :type host: dict
+    :param host: dict for host object.
+        :keys:
+            'name': (str)  Technical name of the host.
+            'interfaces': (array)  Interfaces to be created for the host.
+            'groups': (array)  Host groups to add the host to.
+    """
 
     def __init__(self, zbx_api):
         self.__hostgroup = HostGroup(zbx_api)

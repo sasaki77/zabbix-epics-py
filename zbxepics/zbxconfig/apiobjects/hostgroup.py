@@ -3,6 +3,15 @@ from zbxepics.logging.logger import logger
 
 
 class HostGroup(APIObject):
+    """Host group object class for ZabbixAPI.
+
+    :type host: dict
+    :param host: dict for host group object.
+        :keys:
+            'name': (str)  Name of the host group.
+        :optional keys:
+            'new_name': (str)  New name of the host group.
+    """
 
     def create(self, groups):
         for group in groups:

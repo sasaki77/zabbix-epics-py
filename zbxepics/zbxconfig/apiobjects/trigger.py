@@ -3,6 +3,18 @@ from zbxepics.logging.logger import logger
 
 
 class Trigger(APIObject):
+    """Trigger object class for ZabbixAPI.
+
+    :type trigger: dict
+    :param trigger:
+        :keys:
+            'description': (str)  Name of the trigger.
+            'expression': (str)  Reduced trigger expression.
+        :optional keys:
+            'priority': (integer)  Severity of the trigger.
+            'recovery_expression': (str)  Reduced trigger recovery expression.
+            'manual_close': (integer)  Allow manual close.
+    """
 
     def __init__(self, zbx_api):
         super(Trigger, self).__init__(zbx_api)
