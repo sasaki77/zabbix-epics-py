@@ -4,6 +4,7 @@ from .apiobject import APIObject
 from .host import Host
 from .application import Application
 from .hostinterface import HostInterface
+from zbxepics.logging.logger import logger
 
 
 class Item(APIObject):
@@ -23,8 +24,9 @@ class Item(APIObject):
         hostname = item['host']
         itemid = self.get_id_by_key(key_, hostname)
         if itemid is not None:
-            msg = 'Already exists({0}:{1})'.format(hostname, key_)
-            raise Exception(msg)
+            logger.debug(('Already exists({0}:{1})'
+                          .format(hostname, key_)))
+            return None
 
         params = self.__to_parameters(item)
         params['hostid'] = self.__host.get_id_by_name(hostname)
@@ -39,8 +41,9 @@ class Item(APIObject):
             itemid = self.get_id_by_key(key_, hostname)
 
         if itemid is None:
-            msg = 'Not exists({0}:{1})'.format(hostname, key_)
-            raise Exception(msg)
+            logger.debug(('Not exists({0}:{1})'
+                          .format(hostname, key_)))
+            return None
 
         params = self.__to_parameters(item)
         params['itemid'] = itemid

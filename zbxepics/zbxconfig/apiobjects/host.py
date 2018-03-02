@@ -1,5 +1,6 @@
 from .apiobject import APIObject
 from .hostgroup import HostGroup
+from zbxepics.logging.logger import logger
 
 
 class Host(APIObject):
@@ -16,7 +17,8 @@ class Host(APIObject):
         name = host['name']
         hostid = self.get_id_by_name(name)
         if hostid is not None:
-            raise Exception('Already exists({0})'.format(name))
+            logger.debug('Already exists({0})'.format(name))
+            return None
 
         params = self.__to_parameters(host)
 
@@ -29,7 +31,8 @@ class Host(APIObject):
             hostid = self.get_id_by_name(name)
 
         if hostid is None:
-            raise Exception('Not exists({0})'.format(name))
+            logger.debug('Not exists({0})'.format(name))
+            return None
 
         params = self.__to_parameters(host)
         params['hostid'] = hostid

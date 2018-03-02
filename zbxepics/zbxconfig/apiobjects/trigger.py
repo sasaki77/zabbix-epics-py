@@ -1,4 +1,5 @@
 from .apiobject import APIObject
+from zbxepics.logging.logger import logger
 
 
 class Trigger(APIObject):
@@ -13,8 +14,9 @@ class Trigger(APIObject):
     def create_one(self, trigger):
         triggerid = self.__get_id(trigger)
         if triggerid is not None:
-            msg = 'Already exists({0})'.format(trigger['expression'])
-            raise Exception(msg)
+            logger.debug(('Already exists({0})'
+                          .format(trigger['expression'])))
+            return None
 
         params = self.__to_parameters(trigger)
 
@@ -26,8 +28,9 @@ class Trigger(APIObject):
             triggerid = self.__get_id(trigger)
 
         if triggerid is None:
-            msg = 'Not exists({0})'.format(trigger['expression'])
-            raise Exception(msg)
+            logger.debug(('Not exists({0})'
+                          .format(trigger['expression'])))
+            return None
 
         params = self.__to_parameters(trigger)
         params['triggerid'] = triggerid
@@ -47,12 +50,9 @@ class Trigger(APIObject):
         params = {}
         params['description'] = trigger['description']
         params['expression'] = trigger['expression']
-        if 'priority' in trigger:
-            params['priority'] = trigger['priority']
-        if 'recovery_expression' in trigger:
-            params['recovery_expression'] = trigger['recovery_expression']
-        if 'manual_close' in trigger:
-            params['manual_close'] = trigger['manual_close']
+        params['priority'] = trigger.get('priority')
+        params['recovery_expression'] = trigger.get('recovery_expression')
+        params['manual_close'] = trigger.get('manual_close')
 
         return params
 

@@ -1,5 +1,6 @@
 from .apiobject import APIObject
 from .host import Host
+from zbxepics.logging.logger import logger
 
 
 class Application(APIObject):
@@ -17,8 +18,8 @@ class Application(APIObject):
         hostname = application['host']
         applicationid = self.get_id_by_name(name, hostname)
         if applicationid is not None:
-            msg = 'Already exists({0},{1})'.format(hostname, name)
-            raise Exception(msg)
+            logger.debug('Already exists({0},{1})'.format(hostname, name))
+            return None
 
         params = self.__to_parameters(application)
         params['hostid'] = self.__host.get_id_by_name(hostname)
@@ -33,8 +34,8 @@ class Application(APIObject):
             applicationid = self.get_id_by_name(name, hostname)
 
         if applicationid is None:
-            msg = 'Not exists({0},{1})'.format(hostname, name)
-            raise Exception(msg)
+            logger.debug('Not exists(%s,%s)'.format(hostname, name))
+            return None
 
         params = self.__to_parameters(application)
         params['applicationid'] = applicationid

@@ -22,15 +22,15 @@ class HostInterface(APIObject):
         result = self._do_request('hostinterface.get', params)
         return result
 
-    def get_id_by_dns(self, hostname, dns_name, port):
+    def get_id_by_dns(self, hostname, dns, port):
         interfaces = self.get_interfaces_by_host([hostname],
-                                                 dns=dns_name,
+                                                 dns=dns,
                                                  port=port)
         return interfaces[0]['interfaceid'] if interfaces else None
 
-    def get_id_by_ip(self, hostname, ip_addr, port):
+    def get_id_by_ip(self, hostname, ip, port):
         interfaces = self.get_interfaces_by_host([hostname],
-                                                 ip=ip_addr,
+                                                 ip=ip,
                                                  port=port)
         return interfaces[0]['interfaceid'] if interfaces else None
 
