@@ -1,0 +1,145 @@
+{
+  "default": {
+    "item": {
+      "interval": "30.0",
+      "func": "last"
+    }
+  },
+  "hostgroups": [
+    {
+      "default": {},
+      "name": "Dummy Group",
+      "hosts": [
+        {
+          "default": {
+            "interface": {
+              "type": "1",
+              "main": "1",
+              "useip": "1",
+              "dns": "",
+              "port": "10050"
+            },
+            "item": {
+              "type": 2,
+              "value_type": 0,
+              "trapper_hosts": "",
+              "history": "1d"
+            },
+            "trigger": {
+              "manual_close": "1"
+            }
+          },
+          "name": "dummyServerHost1",
+          "interfaces": [
+            {
+              "ip": "192.168.0.10"
+            }
+          ],
+          "applications": [
+            {
+              "name": "Status",
+              "items": [
+                {
+                  "name": "countup5",
+                  "key_": "dummy.countup5",
+                  "pv": "dummyHost:COUNTUP5",
+                  "interval": "5.0",
+                  "func": "max"
+                },
+                {
+                  "name": "countup10",
+                  "key_": "dummy.countup10",
+                  "pv": "dummyHost:COUNTUP10",
+                  "interval": "10.0"
+                },
+                {
+                  "name": "Heartbeat",
+                  "pv": "dummyHost:HEARTBEAT",
+                  "key_": "dummy.heartbeat",
+                  "interval": "monitor"
+                }
+              ]
+            }
+          ],
+          "triggers": [
+            {
+              "description" : "dummy trigger1",
+              "expression" : "{dummyServerHost1:dummy.countup5.last()}>5",
+              "priority" : "1",
+              "recovery_expression" : "",
+              "manual_close" : "0"
+            },
+            {
+              "description" : "dummy trigger2",
+              "expression" : "{dummyServerHost1:dummy.countup10.last()}>10"
+            }
+          ]
+        },
+        {
+          "default": {
+            "interface": {
+              "type": 1,
+              "main": 1,
+              "useip": 1,
+              "dns": "",
+              "port": "10050"
+            },
+            "item": {
+              "type": 2,
+              "value_type": 0,
+              "trapper_hosts": "",
+              "history": "3d"
+            },
+            "trigger": {
+              "priority": "2",
+              "manual_close": "1"
+            }
+          },
+          "name": "dummyServerHost2",
+          "interfaces": [
+            {
+              "ip": "192.168.0.11"
+            }
+          ],
+          "applications": [
+            {
+              "name": "Status",
+              "items": [
+                {
+                  "name": "countup5",
+                  "key_": "dummy.countup5",
+                  "pv": "dummyHost:COUNTUP5",
+                  "interval": "5.0",
+                  "func": "max"
+                },
+                {
+                  "name": "countup10",
+                  "key_": "dummy.countup10",
+                  "pv": "dummyHost:COUNTUP10"
+                },
+                {
+                  "name": "Heartbeat",
+                  "pv": "dummyHost:HEARTBEAT",
+                  "key_": "dummy.heartbeat",
+                  "interval": "monitor"
+                }
+              ]
+            }
+          ],
+          "triggers": [
+            {
+              "description" : "dummy trigger1",
+              "expression" : "{dummyServerHost2:dummy.countup5.last()}>5",
+              "priority" : "0",
+              "manual_close" : "0"
+            },
+            {
+              "description" : "dummy trigger2",
+              "expression" : "{dummyServerHost2:dummy.countup10.last()}>10"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
