@@ -44,7 +44,7 @@ class Application(APIObject):
             applicationid = self.get_id_by_name(name, hostname)
 
         if applicationid is None:
-            logger.debug('Not exists(%s,%s)'.format(hostname, name))
+            logger.debug('Not exists({0},{1})'.format(hostname, name))
             return None
 
         params = self.__to_parameters(application)
