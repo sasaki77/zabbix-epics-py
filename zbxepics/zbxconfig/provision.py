@@ -118,9 +118,6 @@ class ZabbixProvisionConfigJSON(object):
         hostname = host['name']
         host_config = {}
         host_config['host'] = {'name': hostname, 'groups': groups}
-        host_config['applications'] = []
-        host_config['items'] = []
-        host_config['triggers'] = []
 
         default_iface = {}
         if 'interface' in host_default:
@@ -135,29 +132,47 @@ class ZabbixProvisionConfigJSON(object):
             if interfaces:
                 host_default['item']['interface'] = interfaces[0]
 
+        contents = self.__parse_host_contents(host, host_default)
+        if contents:
+            host_config['applications'] = contents['applications']
+            host_config['items'] = contents['items']
+            host_config['triggers'] = contents['triggers']
+
+        return host_config
+
+    def __parse_host_contents(self, host, default=None):
+        if default is None:
+            default = {}
+
+        contents = {}
+        contents['applications'] = []
+        contents['items'] = []
+        contents['triggers'] = []
+
+        hostname = host['name']
         if 'applications' in host:
             default_item = None
-            if 'item' in host_default:
-                default_item = copy.deepcopy(host_default['item'])
+            if 'item' in default:
+                default_item = copy.deepcopy(default['item'])
             for app in host['applications']:
                 app_name = app['name']
                 app_ = {'host': hostname, 'name': app_name}
-                host_config['applications'].append(app_)
+                contents['applications'].append(app_)
                 if 'items' not in app:
                     continue
                 items = self.__parse_items(app['items'], hostname,
                                            [app_name], default_item)
-                host_config['items'].extend(items)
+                contents['items'].extend(items)
 
         if 'triggers' in host:
             default_trigger = None
-            if 'trigger' in host_default:
-                default_trigger = copy.deepcopy(host_default['trigger'])
+            if 'trigger' in default:
+                default_trigger = copy.deepcopy(default['trigger'])
             triggers = self.__parase_triggers(host['triggers'], hostname,
                                               default_trigger)
-            host_config['triggers'] = triggers
+            contents['triggers'] = triggers
 
-        return host_config
+        return contents
 
     def __parse_items(self, items, hostname, apps, default=None):
         if default is None:
