@@ -11,8 +11,6 @@ class Application(APIObject):
         :keys:
             'name': (str)  Name of the application.
             'host': (str)  Name of the host that the item belongs to.
-        :optional keys:
-            'new_name': (str)  New name of the application.
     """
 
     def __init__(self, zbx_api):
@@ -49,8 +47,6 @@ class Application(APIObject):
 
         params = self.__to_parameters(application)
         params['applicationid'] = applicationid
-        if 'new_name' in application:
-            params['name'] = application['new_name']
 
         result = self._do_request('application.update', params)
         return result['applicationids'][0] if result else None
