@@ -63,7 +63,7 @@ class Trigger(APIObject):
         params['description'] = trigger['description']
         params['expression'] = trigger['expression']
         params['priority'] = trigger.get('priority')
-        params['recovery_expression'] = trigger.get('recovery_expression')
+        params['recovery_expression'] = trigger.get('recovery_expression', '')
         params['manual_close'] = trigger.get('manual_close')
 
         return params
