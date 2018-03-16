@@ -73,7 +73,7 @@ class Item(APIObject):
             params['interfaceid'] = ifaceid
         if 'applications' in item:
             app_names = item['applications']
-            app_ids = self.__get_app_ids(item['host'], app_names)
+            app_ids = self.__get_app_ids(app_names, item['host'])
             params['applications'] = app_ids
 
         return params
