@@ -101,7 +101,7 @@ class Item(APIObject):
         return items[0]['itemid'] if items else None
 
     def __get_app_ids(self, app_names, hostname):
-        apps = self.__app.get_applications_by_name(app_names, hostname)
+        apps = self.__app.get_ids_by_name(app_names, hostname)
         if not apps:
             return None
 

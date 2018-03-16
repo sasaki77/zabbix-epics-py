@@ -61,7 +61,7 @@ class Host(APIObject):
         params = {}
         params['host'] = host['name']
         params['interfaces'] = host['interfaces']
-        params['groups'] = self.__get_hostgroup_ids(host['groups'])
+        params['groups'] = self.__get_groupids(host['groups'])
 
         return params
 
@@ -76,16 +76,19 @@ class Host(APIObject):
         return result
 
     def get_id_by_name(self, name):
-        hosts = self.get_hosts_by_name([name])
-        return hosts[0]['hostid'] if hosts else None
+        hostids = self.get_ids_by_name([name])
+        return hostids[0]['hostid'] if hostids else None
 
-    def __get_hostgroup_ids(self, groups):
-        groupids = (self.__hostgroup
-                    .get_hostgroups_by_name(groups, ['groupid']))
+    def get_ids_by_name(self, names):
+        hosts = self.get_hosts_by_name(names, ['hostid'])
+        return hosts if hosts else None
+
+    def __get_groupids(self, groups):
+        groupids = self.__hostgroup.get_ids_by_name(groups)
         return groupids
 
     def delete(self, names):
-        hosts = self.get_hosts_by_name(names)
+        hosts = self.get_ids_by_name(names)
         if not hosts:
             return None
 

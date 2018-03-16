@@ -71,11 +71,15 @@ class HostGroup(APIObject):
         return result
 
     def get_id_by_name(self, name):
-        groups = self.get_hostgroups_by_name([name])
+        groups = self.get_ids_by_name([name])
         return groups[0]['groupid'] if groups else None
 
+    def get_ids_by_name(self, names):
+        groups = self.get_hostgroups_by_name(names, ['groupid'])
+        return groups if groups else None
+
     def delete(self, names):
-        groups = self.get_hostgroups_by_name(names)
+        groups = self.get_ids_by_name(names)
         if not groups:
             return None
 

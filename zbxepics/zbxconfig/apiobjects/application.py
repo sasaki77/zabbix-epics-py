@@ -78,11 +78,16 @@ class Application(APIObject):
         return result
 
     def get_id_by_name(self, name, hostname):
-        apps = self.get_applications_by_name([name], hostname)
+        apps = self.get_ids_by_name([name], hostname)
         return apps[0]['applicationid'] if apps else None
 
+    def get_ids_by_name(self, names, hostname):
+        apps = self.get_applications_by_name(names, hostname,
+                                             ['applicationid'])
+        return apps if apps else None
+
     def delete(self, names, hostname):
-        apps = self.get_applications_by_name(names, hostname)
+        apps = self.get_ids_by_name(names, hostname)
         if not apps:
             return None
 
