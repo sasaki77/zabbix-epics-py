@@ -76,7 +76,13 @@ class ZabbixHTTPRequestHandler(BaseHTTPRequestHandler):
             'expression': '{dummyServerHost:dummy.key.last()}>0'
             }],
         'trigger.create': {'triggerids': ['12345']},
-        'trigger.update': {'triggerids': ['12345']}
+        'trigger.update': {'triggerids': ['12345']},
+        'template.get': [{
+            'templateid': '12345',
+            'host': 'Template dummy'
+            }],
+        'template.create': {'templateids': ['12345']},
+        'template.update': {'templateids': ['12345']}
         }
 
 

@@ -13,11 +13,8 @@
         {
           "default": {
             "interface": {
-              "type": "1",
-              "main": "1",
               "useip": "1",
-              "dns": "",
-              "port": "10050"
+              "dns": ""
             },
             "item": {
               "type": 2,
@@ -29,10 +26,13 @@
               "manual_close": "1"
             }
           },
-          "name": "dummyServerHost1",
+          "name": "dummyHostProvision1",
           "interfaces": [
             {
-              "ip": "192.168.0.10"
+              "type": "1",
+              "main": "1",
+              "ip": "192.168.0.10",
+              "port": "10050"
             }
           ],
           "applications": [
@@ -40,23 +40,18 @@
               "name": "Status",
               "items": [
                 {
-                  "name": "countup5",
-                  "key_": "dummy.countup5",
+                  "name": "host trapper item example",
+                  "key_": "dummy.trapper1",
                   "pv": "dummyHost:COUNTUP5",
                   "interval": "5.0",
                   "func": "max"
                 },
                 {
-                  "name": "countup10",
-                  "key_": "dummy.countup10",
-                  "pv": "dummyHost:COUNTUP10",
-                  "interval": "10.0"
-                },
-                {
-                  "name": "Heartbeat",
-                  "pv": "dummyHost:HEARTBEAT",
-                  "key_": "dummy.heartbeat",
-                  "interval": "monitor"
+                  "name": "host zabbox agent item example",
+                  "key_": "agent.version",
+                  "delay": "1m",
+                  "type": 0,
+                  "value_type": 1
                 }
               ]
             }
@@ -64,14 +59,10 @@
           "triggers": [
             {
               "description" : "dummy trigger1",
-              "expression" : "{dummyServerHost1:dummy.countup5.last()}>5",
+              "expression" : "{dummyHostProvision1:dummy.trapper1.last()}>5",
               "priority" : "1",
               "recovery_expression" : "",
               "manual_close" : "0"
-            },
-            {
-              "description" : "dummy trigger2",
-              "expression" : "{dummyServerHost1:dummy.countup10.last()}>10"
             }
           ]
         },
@@ -95,7 +86,8 @@
               "manual_close": "1"
             }
           },
-          "name": "dummyServerHost2",
+          "name": "dummyHostProvision2",
+          "templates": ["Template dummy"],
           "interfaces": [
             {
               "ip": "192.168.0.11"
@@ -106,22 +98,8 @@
               "name": "Status",
               "items": [
                 {
-                  "name": "countup5",
-                  "key_": "dummy.countup5",
-                  "pv": "dummyHost:COUNTUP5",
-                  "interval": "5.0",
-                  "func": "max"
-                },
-                {
-                  "name": "countup10",
-                  "key_": "dummy.countup10",
-                  "pv": "dummyHost:COUNTUP10"
-                },
-                {
-                  "name": "Heartbeat",
-                  "pv": "dummyHost:HEARTBEAT",
-                  "key_": "dummy.heartbeat",
-                  "interval": "monitor"
+                  "name": "host trapper item example",
+                  "key_": "dummy.trapper2"
                 }
               ]
             }
@@ -129,13 +107,67 @@
           "triggers": [
             {
               "description" : "dummy trigger1",
-              "expression" : "{dummyServerHost2:dummy.countup5.last()}>5",
+              "expression" : "{dummyHostProvision2:dummy.trapper2.last()}>5",
+              "priority" : "0",
+              "manual_close" : "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "default": {},
+      "name": "Templates/Dummy",
+      "templates": [
+        {
+          "default": {
+            "item": {
+              "type": 2,
+              "value_type": 0,
+              "trapper_hosts": "",
+              "history": "3d"
+            },
+            "trigger": {
+              "priority": "2",
+              "manual_close": "1"
+            }
+          },
+          "name": "Template dummy",
+          "applications": [
+            {
+              "name": "Internal",
+              "items": [
+                {
+                  "name": "template item countup5",
+                  "key_": "dummy.countup5",
+                  "pv": "dummyHost:COUNTUP5",
+                  "interval": "5.0",
+                  "func": "max"
+                },
+                {
+                  "name": "template item countup10",
+                  "key_": "dummy.countup10",
+                  "pv": "dummyHost:COUNTUP10"
+                },
+                {
+                  "name": "template item Heartbeat",
+                  "key_": "dummy.heartbeat",
+                  "pv": "dummyHost:HEARTBEAT",
+                  "interval": "monitor"
+                }
+              ]
+            }
+          ],
+          "triggers": [
+            {
+              "description" : "dummy template trigger1",
+              "expression" : "{Template dummy:dummy.countup5.last()}>5",
               "priority" : "0",
               "manual_close" : "0"
             },
             {
-              "description" : "dummy trigger2",
-              "expression" : "{dummyServerHost2:dummy.countup10.last()}>10"
+              "description" : "dummy template trigger2",
+              "expression" : "{Template dummy:dummy.countup10.last()}>10"
             }
           ]
         }

@@ -15,8 +15,7 @@ class ZabbixProvisionCA(object):
 
         self.__hostgroup = apiobjects.HostGroup(self.__zbx_api)
         self.__host = apiobjects.Host(self.__zbx_api)
-        self.__item = apiobjects.Item(self.__zbx_api)
-        self.__application = apiobjects.Application(self.__zbx_api)
+        self.__template = apiobjects.Template(self.__zbx_api)
         self.__trigger = apiobjects.Trigger(self.__zbx_api)
 
     def set_hostgroups(self, hostgroups):
@@ -25,11 +24,16 @@ class ZabbixProvisionCA(object):
     def set_hosts(self, hosts):
         self.__host.create_or_update(hosts)
 
-    def set_items(self, items):
-        self.__item.create_or_update(items)
+    def set_templates(self, templates):
+        self.__template.create_or_update(templates)
 
-    def set_applications(self, applications):
-        self.__application.create_or_update(applications)
+    def set_items(self, items, templated=False):
+        itemapi = apiobjects.Item(self.__zbx_api, templated)
+        itemapi.create_or_update(items)
+
+    def set_applications(self, applications, templated=False):
+        appapi = apiobjects.Application(self.__zbx_api, templated)
+        appapi.create_or_update(applications)
 
     def set_triggers(self, triggers):
         self.__trigger.create_or_update(triggers)
@@ -40,14 +44,25 @@ class ZabbixProvisionCA(object):
 
         if 'hostgroups' in config:
             self.set_hostgroups(config['hostgroups'])
+
         if 'hosts' in config:
-            self.set_hosts(config['hosts'])
-        if 'applications' in config:
-            self.set_applications(config['applications'])
-        if 'items' in config:
-            self.set_items(config['items'])
-        if 'triggers' in config:
-            self.set_triggers(config['triggers'])
+            host_objs = [host['info'] for host in config['hosts']]
+            self.set_hosts(host_objs)
+
+            for host_ in config['hosts']:
+                self.set_applications(host_['applications'])
+                self.set_items(host_['items'])
+                self.set_triggers(host_['triggers'])
+
+        if 'templates' in config:
+            tpl_objs = [tpl['info'] for tpl in config['templates']]
+            self.set_templates(tpl_objs)
+
+            templated = True
+            for tpl_ in config['templates']:
+                self.set_applications(tpl_['applications'], templated)
+                self.set_items(tpl_['items'], templated)
+                self.set_triggers(tpl_['triggers'])
 
 
 class ZabbixProvisionConfigJSON(object):
@@ -67,9 +82,7 @@ class ZabbixProvisionConfigJSON(object):
         config = {}
         config['hostgroups'] = []
         config['hosts'] = []
-        config['applications'] = []
-        config['items'] = []
-        config['triggers'] = []
+        config['templates'] = []
 
         with open(config_file, 'r') as f:
             json_data = json.load(f)
@@ -93,18 +106,45 @@ class ZabbixProvisionConfigJSON(object):
             group_ = {'name': groupname}
             config['hostgroups'].append(group_)
 
-            if 'hosts' not in group:
-                continue
-            for host in group['hosts']:
-                host_ = self.__parse_host(host, [groupname],
-                                          group_default)
+            groups = [groupname]
+            hosts = group.get('hosts', [])
+            for host in hosts:
+                host_ = self.__parse_host(host, groups,
+                                          default=group_default)
                 if host_:
-                    config['hosts'].append(host_['host'])
-                    config['applications'].extend(host_['applications'])
-                    config['items'].extend(host_['items'])
-                    config['triggers'].extend(host_['triggers'])
+                    config['hosts'].append(host_)
+
+            templates = group.get('templates', [])
+            for template in templates:
+                template_ = self.__parse_template(template, groups,
+                                                  default=group_default)
+                if template_:
+                    config['templates'].append(template_)
 
         return config
+
+    def __parse_template(self, template, groups, default=None):
+        # Default
+        if default is None:
+            default = {}
+        template_default = copy.deepcopy(default)
+        if 'default' in template:
+            template_default = self.__update_nested_dict(template_default,
+                                                         template['default'])
+
+        template_config = {}
+        template_config['info'] = {'name': template['name'],
+                                   'groups': groups}
+        if 'hosts' in template:
+            template_config['info']['hosts'] = template['hosts']
+
+        contents = self.__parse_host_contents(template, template_default)
+        if contents:
+            template_config['applications'] = contents['applications']
+            template_config['items'] = contents['items']
+            template_config['triggers'] = contents['triggers']
+
+        return template_config
 
     def __parse_host(self, host, groups, default=None):
         # Default
@@ -115,9 +155,8 @@ class ZabbixProvisionConfigJSON(object):
             host_default = self.__update_nested_dict(host_default,
                                                      host['default'])
 
-        hostname = host['name']
         host_config = {}
-        host_config['host'] = {'name': hostname, 'groups': groups}
+        host_config['info'] = {'name': host['name'], 'groups': groups}
 
         default_iface = {}
         if 'interface' in host_default:
@@ -128,9 +167,12 @@ class ZabbixProvisionConfigJSON(object):
                 interface_ = default_iface
                 interface_.update(interface)
                 interfaces.append(interface_)
-            host_config['host']['interfaces'] = interfaces
+            host_config['info']['interfaces'] = interfaces
             if interfaces:
                 host_default['item']['interface'] = interfaces[0]
+
+        if 'templates' in host:
+            host_config['info']['templates'] = host['templates']
 
         contents = self.__parse_host_contents(host, host_default)
         if contents:

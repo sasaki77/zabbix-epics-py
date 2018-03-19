@@ -1,5 +1,6 @@
 from .apiobject import APIObject
 from .host import Host
+from .template import Template
 from zbxepics.logging.logger import logger
 
 
@@ -13,8 +14,11 @@ class Application(APIObject):
             'host': (str)  Name of the host that the item belongs to.
     """
 
-    def __init__(self, zbx_api):
-        self.__host = Host(zbx_api)
+    def __init__(self, zbx_api, templated=False):
+        if templated:
+            self.__host = Template(zbx_api)
+        else:
+            self.__host = Host(zbx_api)
         super(Application, self).__init__(zbx_api)
 
     def create(self, applications):

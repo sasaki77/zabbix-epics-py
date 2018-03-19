@@ -37,8 +37,7 @@ class TestZabbixProvisionCA(unittest.TestCase):
         loader = provision.ZabbixProvisionConfigJSON()
         config_data = loader.load_config_from_json(config_file)
         self.assertIsNotNone(config_data)
-        fileds = ['hostgroups', 'hosts', 'applications',
-                  'items', 'triggers']
+        fileds = ['hostgroups', 'hosts', 'templates']
         self.assertEqual(sorted(config_data.keys()), sorted(fileds))
 
         # url = 'http://localhost/zabbix'

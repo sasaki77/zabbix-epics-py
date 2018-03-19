@@ -160,6 +160,27 @@ class TestAPIObjects(unittest.TestCase):
         triggerid = trigger.update_one(params)
         self.assertIsNotNone(triggerid)
 
+    def testA_init_template(self):
+        template = apiobjects.Template(self._zbx_api)
+        self.assertIsNotNone(template)
+
+    def test_template_create(self):
+        template = apiobjects.Template(self._zbx_api)
+
+        params = {'name': 'Template dummy',
+                  'groups': ['Template/Dummy']}
+        templateid = template.create_one(params)
+        self.assertIsNotNone(templateid)
+
+    def test_template_update(self):
+        template = apiobjects.Template(self._zbx_api)
+
+        params = {'name': 'Template dummy',
+                  'groups': ['Template/Dummy'],
+                  'hosts': ['dummyServerHost']}
+        templateid = template.update_one(params)
+        self.assertIsNotNone(templateid)
+
 
 def main():
     unittest.main(verbosity=2)

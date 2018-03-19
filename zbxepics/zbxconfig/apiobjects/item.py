@@ -2,6 +2,7 @@ import copy
 
 from .apiobject import APIObject
 from .host import Host
+from .template import Template
 from .application import Application
 from .hostinterface import HostInterface
 from zbxepics.logging.logger import logger
@@ -22,9 +23,12 @@ class Item(APIObject):
             See also `API` in Zabbix Documentation.
     """
 
-    def __init__(self, zbx_api):
-        self.__host = Host(zbx_api)
-        self.__app = Application(zbx_api)
+    def __init__(self, zbx_api, templated=False):
+        if templated:
+            self.__host = Template(zbx_api)
+        else:
+            self.__host = Host(zbx_api)
+        self.__app = Application(zbx_api, templated)
         self.__iface = HostInterface(zbx_api)
         super(Item, self).__init__(zbx_api)
 

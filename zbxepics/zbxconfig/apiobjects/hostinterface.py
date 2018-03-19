@@ -50,7 +50,5 @@ class HostInterface(APIObject):
 
     def __get_host_ids(self, hostnames):
         hosts = self.__host.get_hosts_by_name(hostnames)
-        hostids = None
-        if hosts:
-            hostids = [host['hostid'] for host in hosts]
+        hostids = [host['hostid'] for host in hosts] if hosts else None
         return hostids

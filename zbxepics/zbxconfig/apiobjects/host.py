@@ -1,5 +1,6 @@
 from .apiobject import APIObject
 from .hostgroup import HostGroup
+from .template import Template
 from zbxepics.logging.logger import logger
 
 
@@ -16,6 +17,7 @@ class Host(APIObject):
 
     def __init__(self, zbx_api):
         self.__hostgroup = HostGroup(zbx_api)
+        self.__template = Template(zbx_api)
         super(Host, self).__init__(zbx_api)
 
     def create(self, hosts):
@@ -62,6 +64,8 @@ class Host(APIObject):
         params['host'] = host['name']
         params['interfaces'] = host['interfaces']
         params['groups'] = self.__get_groupids(host['groups'])
+        if 'templates' in host:
+            params['templates'] = self.__get_templateids(host['templates'])
 
         return params
 
@@ -86,6 +90,10 @@ class Host(APIObject):
     def __get_groupids(self, groups):
         groupids = self.__hostgroup.get_ids_by_name(groups)
         return groupids
+
+    def __get_templateids(self, templates):
+        templateids = self.__template.get_ids_by_name(templates)
+        return templateids
 
     def delete(self, names):
         hosts = self.get_ids_by_name(names)

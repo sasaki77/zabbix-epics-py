@@ -4,3 +4,4 @@ from .item import Item
 from .application import Application
 from .trigger import Trigger
 from .hostinterface import HostInterface
+from .template import Template
