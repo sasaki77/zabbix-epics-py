@@ -50,8 +50,7 @@ class TestAPIObjects(unittest.TestCase):
     def test_hostgroup_update(self):
         hostgroup = apiobjects.HostGroup(self._zbx_api)
 
-        params = {'name': 'Dummy Hosts',
-                  'new_name': 'Dummy hosts'}
+        params = {'name': 'Dummy Hosts'}
         groupid = hostgroup.update_one(params)
         self.assertIsNotNone(groupid)
 

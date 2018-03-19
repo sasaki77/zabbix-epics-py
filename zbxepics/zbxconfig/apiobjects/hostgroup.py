@@ -9,8 +9,6 @@ class HostGroup(APIObject):
     :param host: dict for host group object.
         :keys:
             'name': (str)  Name of the host group.
-        :optional keys:
-            'new_name': (str)  New name of the host group.
     """
 
     def create(self, groups):
@@ -40,8 +38,6 @@ class HostGroup(APIObject):
 
         params = self.__to_parameters(group)
         params['groupid'] = groupid
-        if 'new_name' in group:
-            params['name'] = group['new_name']
 
         result = self._do_request('hostgroup.update', params)
         return result['groupids'][0] if result else None
