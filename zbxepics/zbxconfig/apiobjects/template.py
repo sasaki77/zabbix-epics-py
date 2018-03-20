@@ -121,11 +121,11 @@ class Template(APIObject):
         :rtype: list
         :return: Return IDs of the deleted templates.
         """
-        templateids = self.get_ids_by_name(names)
-        if not templateids:
+        templates = self.get_ids_by_name(names)
+        if not templates:
             return None
 
-        params = [id_['templateid'] for id_ in templateids]
+        params = [template['templateid'] for template in templates]
 
         result = self._do_request('template.delete', params)
         return result['templateids'] if result else None

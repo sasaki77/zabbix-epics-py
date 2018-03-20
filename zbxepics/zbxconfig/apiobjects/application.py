@@ -125,7 +125,7 @@ class Application(APIObject):
         if not apps:
             return None
 
-        params = [id_['applicationid'] for id_ in apps]
+        params = [app['applicationid'] for app in apps]
 
         result = self._do_request('application.delete', params)
         return result['applicationids'] if result else None

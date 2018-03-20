@@ -147,7 +147,7 @@ class Item(APIObject):
         if not items:
             return None
 
-        params = [id_['itemid'] for id_ in items]
+        params = [item['itemid'] for item in items]
 
         result = self._do_request('item.delete', params)
         return result['itemids'] if result else None
