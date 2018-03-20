@@ -172,8 +172,14 @@ class ZabbixProvisionConfigJSON(object):
             if interfaces:
                 host_default['item']['interface'] = interfaces[0]
 
+        templates = None
         if 'templates' in host:
-            host_config['info']['templates'] = host['templates']
+            templates = host['templates']
+        elif 'templates' in host_default:
+            templates = host_default['templates']
+
+        if templates:
+            host_config['info']['templates'] = templates
 
         contents = self.__parse_host_contents(host, host_default)
         if contents:
