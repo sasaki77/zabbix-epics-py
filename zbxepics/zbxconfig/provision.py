@@ -73,7 +73,8 @@ class ZabbixProvisionConfigJSON(object):
                 tmp = orig_dict.get(key, {})
                 orig_dict[key] = self.__update_nested_dict(tmp, val)
             elif isinstance(val, list):
-                orig_dict[key] = orig_dict.get(key, []).extend(val)
+                tmp = orig_dict.get(key, [])
+                orig_dict[key] = tmp.extend(val) if tmp else val
             else:
                 orig_dict[key] = new_dict[key]
         return orig_dict
