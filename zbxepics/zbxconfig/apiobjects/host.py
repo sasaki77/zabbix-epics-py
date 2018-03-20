@@ -72,7 +72,7 @@ class Host(APIObject):
     def get_hosts_by_name(self, names, output=None):
         params = {}
         params['filter'] = {'host': names}
-        params['output'] = ['hostid', 'name', 'interfaces', 'groups']
+        params['output'] = ['hostid', 'host', 'name']
         if output is not None:
             params['output'] = output
 
