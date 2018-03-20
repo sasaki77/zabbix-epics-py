@@ -1,3 +1,5 @@
+import copy
+
 from .apiobject import APIObject
 from .hostgroup import HostGroup
 from .template import Template
@@ -66,6 +68,9 @@ class Host(APIObject):
 
         params = self.__to_parameters(host)
         params['hostid'] = hostid
+        if 'templates_clear' in host:
+            templateids = self.__get_templateids(host['templates_clear'])
+            params['templates_clear'] = templateids
 
         result = self._do_request('host.update', params)
         return result['hostids'][0] if result else None
@@ -79,12 +84,12 @@ class Host(APIObject):
                 self.update_one(host, hostid)
 
     def __to_parameters(self, host):
-        params = {}
+        params = copy.deepcopy(host)
         params['host'] = host['name']
-        params['interfaces'] = host['interfaces']
         params['groups'] = self.__get_groupids(host['groups'])
-        if 'templates' in host:
-            params['templates'] = self.__get_templateids(host['templates'])
+        if 'templates' in params:
+            templateids = self.__get_templateids(params['templates'])
+            params['templates'] = templateids
 
         return params
 

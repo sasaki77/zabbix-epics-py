@@ -89,14 +89,15 @@ class Item(APIObject):
 
     def __to_parameters(self, item):
         params = copy.deepcopy(item)
-        if 'interface' in item:
-            iface = item['interface']
-            ifaceid = self.__iface.get_id_by_ip(item['host'], iface['ip'],
+        if 'interface' in params:
+            iface = params['interface']
+            ifaceid = self.__iface.get_id_by_ip(params['host'], iface['ip'],
                                                 iface['port'])
             params['interfaceid'] = ifaceid
-        if 'applications' in item:
-            app_names = item['applications']
-            app_ids = self.__get_app_ids(app_names, item['host'])
+            params.pop('interface', None)
+        if 'applications' in params:
+            app_names = params['applications']
+            app_ids = self.__get_app_ids(app_names, params['host'])
             params['applications'] = app_ids
 
         return params

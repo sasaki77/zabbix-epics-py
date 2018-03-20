@@ -1,3 +1,5 @@
+import copy
+
 from .apiobject import APIObject
 from .hostgroup import HostGroup
 from zbxepics.logging.logger import logger
@@ -82,10 +84,10 @@ class Template(APIObject):
                 self.update_one(template, templateid)
 
     def __to_parameters(self, template):
-        params = {}
+        params = copy.deepcopy(template)
         params['host'] = template['name']
-        if 'templates' in template:
-            ids = self.get_ids_by_name(template['templates'])
+        if 'templates' in params:
+            ids = self.get_ids_by_name(params['templates'])
             params['templates'] = ids
 
         return params

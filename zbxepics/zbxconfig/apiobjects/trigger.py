@@ -1,3 +1,5 @@
+import copy
+
 from .apiobject import APIObject
 from zbxepics.logging.logger import logger
 
@@ -78,15 +80,9 @@ class Trigger(APIObject):
                 self.update_one(trigger, triggerid)
 
     def __to_parameters(self, trigger):
-        params = {}
-        params['description'] = trigger['description']
-        params['expression'] = trigger['expression']
-        params['priority'] = trigger.get('priority')
-        params['recovery_expression'] = trigger.get('recovery_expression', '')
-        params['manual_close'] = trigger.get('manual_close')
-
-        if 'dependencies' in trigger:
-            ids = self.__get_ids(trigger['dependencies'])
+        params = copy.deepcopy(trigger)
+        if 'dependencies' in params:
+            ids = self.__get_ids(params['dependencies'])
             params['dependencies'] = ids
 
         return params

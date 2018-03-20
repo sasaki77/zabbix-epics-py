@@ -134,8 +134,14 @@ class ZabbixProvisionConfigJSON(object):
                                                          template['default'])
 
         template_config = {}
-        template_config['info'] = {'name': template['name'],
-                                   'groups': groups}
+        info = copy.deepcopy(template)
+        info['groups'] = groups
+        info.pop('default', None)
+        info.pop('applications', None)
+        info.pop('items', None)
+        info.pop('triggers', None)
+        template_config['info'] = info
+
         if 'hosts' in template:
             template_config['info']['hosts'] = template['hosts']
 
@@ -157,7 +163,13 @@ class ZabbixProvisionConfigJSON(object):
                                                      host['default'])
 
         host_config = {}
-        host_config['info'] = {'name': host['name'], 'groups': groups}
+        info = copy.deepcopy(host)
+        info['groups'] = groups
+        info.pop('default', None)
+        info.pop('applications', None)
+        info.pop('items', None)
+        info.pop('triggers', None)
+        host_config['info'] = info
 
         default_iface = {}
         if 'interface' in host_default:
