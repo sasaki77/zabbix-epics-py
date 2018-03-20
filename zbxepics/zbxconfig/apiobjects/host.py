@@ -25,6 +25,14 @@ class Host(APIObject):
             self.create_one(host)
 
     def create_one(self, host):
+        """Create new host.
+
+        :type host: dict
+        :param host: Paramter of Host object.
+
+        :rtype: str
+        :return: Return single ID of the created host.
+        """
         name = host['name']
         hostid = self.get_id_by_name(name)
         if hostid is not None:
@@ -37,6 +45,17 @@ class Host(APIObject):
         return result['hostids'][0] if result else None
 
     def update_one(self, host, hostid=None):
+        """Update existing host.
+
+        :type host: dict
+        :param host: Paramter of Host object.
+
+        :type hostid: str
+        :param hostid: ID of the host.
+
+        :rtype: str
+        :return: Return single ID of the updated host.
+        """
         name = host['name']
         if hostid is None:
             hostid = self.get_id_by_name(name)
@@ -96,6 +115,14 @@ class Host(APIObject):
         return templateids
 
     def delete(self, names):
+        """Delete hosts.
+
+        :type names: list
+        :param names: Technical names of the hosts to delete.
+
+        :rtype: list
+        :return: Return IDs of the deleted hosts.
+        """
         hosts = self.get_ids_by_name(names)
         if not hosts:
             return None

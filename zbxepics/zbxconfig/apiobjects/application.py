@@ -26,6 +26,14 @@ class Application(APIObject):
             self.create_one(application)
 
     def create_one(self, application):
+        """Create new application.
+
+        :type application: dict
+        :param application: Paramter of Application object.
+
+        :rtype: str
+        :return: Return single ID of the created application.
+        """
         name = application['name']
         hostname = application['host']
         applicationid = self.get_id_by_name(name, hostname)
@@ -40,6 +48,17 @@ class Application(APIObject):
         return result['applicationids'][0] if result else None
 
     def update_one(self, application, applicationid=None):
+        """Update existing application.
+
+        :type application: dict
+        :param application: Paramter of Application object.
+
+        :type applicationid: str
+        :param applicationid: ID of the application.
+
+        :rtype: str
+        :return: Return single ID of the updated application.
+        """
         name = application['name']
         hostname = application['host']
         if applicationid is None:
@@ -91,6 +110,17 @@ class Application(APIObject):
         return apps if apps else None
 
     def delete(self, names, hostname):
+        """Delete applications.
+
+        :type names: list
+        :param names: Names of the applications to delete.
+
+        :type hostname: str
+        :param hostname: Technical name of the host.
+
+        :rtype: list
+        :return: Return IDs of the deleted applications.
+        """
         apps = self.get_ids_by_name(names, hostname)
         if not apps:
             return None

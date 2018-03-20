@@ -37,6 +37,14 @@ class Item(APIObject):
             self.create_one(item)
 
     def create_one(self, item):
+        """Create new item.
+
+        :type item: dict
+        :param item: Paramter of Item object.
+
+        :rtype: str
+        :return: Return single ID of the created item.
+        """
         key_ = item['key_']
         hostname = item['host']
         itemid = self.get_id_by_key(key_, hostname)
@@ -52,6 +60,17 @@ class Item(APIObject):
         return result['itemids'][0] if result else None
 
     def update_one(self, item, itemid=None):
+        """Update existing item.
+
+        :type item: dict
+        :param item: Paramter of Item object.
+
+        :type itemid: str
+        :param itemid: ID of the item.
+
+        :rtype: str
+        :return: Return single ID of the updated item.
+        """
         key_ = item['key_']
         hostname = item['host']
         if itemid is None:
@@ -113,6 +132,17 @@ class Item(APIObject):
         return app_ids
 
     def delete(self, hostname, keys):
+        """Delete items.
+
+        :type hostname: str
+        :param hostname: Technical name of the host.
+
+        :type keys: list
+        :param keys: Keys of the items to delete.
+
+        :rtype: list
+        :return: Return IDs of the deleted items.
+        """
         items = self.get_items_by_key(keys, hostname)
         if not items:
             return None

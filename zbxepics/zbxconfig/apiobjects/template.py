@@ -22,6 +22,14 @@ class Template(APIObject):
             self.create_one(template)
 
     def create_one(self, template):
+        """Create new template.
+
+        :type template: dict
+        :param template: Paramter of Template object.
+
+        :rtype: str
+        :return: Return single ID of the created template.
+        """
         name = template['name']
         templateid = self.get_id_by_name(name)
         if templateid is not None:
@@ -35,6 +43,17 @@ class Template(APIObject):
         return result['templateids'][0] if result else None
 
     def update_one(self, template, templateid=None):
+        """Update existing template.
+
+        :type template: dict
+        :param template: Paramter of Template object.
+
+        :type templateid: str
+        :param templateid: ID of the template.
+
+        :rtype: str
+        :return: Return single ID of the updated template.
+        """
         name = template['name']
         if templateid is None:
             templateid = self.get_id_by_name(name)
@@ -94,6 +113,14 @@ class Template(APIObject):
         return groupids
 
     def delete(self, names):
+        """Delete templates.
+
+        :type names: list
+        :param names: Technical names of the templates to delete.
+
+        :rtype: list
+        :return: Return IDs of the deleted templates.
+        """
         templateids = self.get_ids_by_name(names)
         if not templateids:
             return None

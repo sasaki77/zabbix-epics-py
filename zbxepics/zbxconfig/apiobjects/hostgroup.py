@@ -16,6 +16,14 @@ class HostGroup(APIObject):
             self.create_one(group)
 
     def create_one(self, group):
+        """Create new host group.
+
+        :type group: dict
+        :param group: Paramter of Host group object.
+
+        :rtype: str
+        :return: Return single ID of the created host group.
+        """
         name = group['name']
         groupid = self.get_id_by_name(name)
         if groupid is not None:
@@ -28,6 +36,17 @@ class HostGroup(APIObject):
         return result['groupids'][0] if result else None
 
     def update_one(self, group, groupid=None):
+        """Update existing host group.
+
+        :type group: dict
+        :param group: Paramter of Host group object.
+
+        :type groupid: str
+        :param groupid: ID of the host group.
+
+        :rtype: str
+        :return: Return single ID of the updated host group.
+        """
         name = group['name']
         if groupid is None:
             groupid = self.get_id_by_name(name)
@@ -75,6 +94,14 @@ class HostGroup(APIObject):
         return groups if groups else None
 
     def delete(self, names):
+        """Delete host groups.
+
+        :type names: list
+        :param names: Names of the host groups to delete.
+
+        :rtype: list
+        :return: Return IDs of the deleted host groups.
+        """
         groups = self.get_ids_by_name(names)
         if not groups:
             return None

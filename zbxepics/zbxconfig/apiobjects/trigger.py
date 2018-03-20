@@ -24,6 +24,14 @@ class Trigger(APIObject):
             self.create_one(trigger)
 
     def create_one(self, trigger):
+        """Create new trigger.
+
+        :type trigger: dict
+        :param trigger: Paramter of Trigger object.
+
+        :rtype: str
+        :return: Return single ID of the created trigger.
+        """
         triggerid = self.__get_id(trigger)
         if triggerid is not None:
             logger.debug(('Already exists({0})'
@@ -36,6 +44,17 @@ class Trigger(APIObject):
         return result['triggerids'][0] if result else None
 
     def update_one(self, trigger, triggerid=None):
+        """Update existing trigger.
+
+        :type trigger: dict
+        :param trigger: Paramter of Trigger object.
+
+        :type triggerid: str
+        :param triggerid: ID of the trigger.
+
+        :rtype: str
+        :return: Return single ID of the updated trigger.
+        """
         if triggerid is None:
             triggerid = self.__get_id(trigger)
 
@@ -103,6 +122,17 @@ class Trigger(APIObject):
         return triggerid
 
     def delete(self, hostname, expressions):
+        """Delete triggers.
+
+        :type hostname: str
+        :param hostname: Technical name of the host.
+
+        :type expressions: str or list
+        :param expressions: Expressions of the triggers to delete.
+
+        :rtype: list
+        :return: Return IDs of the deleted triggers.
+        """
         triggers = self.get_triggers_by_host(hostname)
         if not triggers:
             return None
