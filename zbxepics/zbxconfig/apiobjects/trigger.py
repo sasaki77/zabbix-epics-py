@@ -85,6 +85,10 @@ class Trigger(APIObject):
         params['recovery_expression'] = trigger.get('recovery_expression', '')
         params['manual_close'] = trigger.get('manual_close')
 
+        if 'dependencies' in trigger:
+            ids = self.__get_ids(trigger['dependencies'])
+            params['dependencies'] = ids
+
         return params
 
     def get_triggers_by_host(self, hostname, description=None,
@@ -120,6 +124,17 @@ class Trigger(APIObject):
                                               trigger['host'],
                                               trigger['description'])
         return triggerid
+
+    def __get_ids(self, triggers):
+        triggerids = []
+        for trigger in triggers:
+            id_ = self.get_id_by_expression(trigger['expression'],
+                                            trigger['host'],
+                                            trigger['description'])
+            if id_:
+                triggerids.append({'triggerid': id_})
+
+        return triggerids
 
     def delete(self, hostname, expressions):
         """Delete triggers.

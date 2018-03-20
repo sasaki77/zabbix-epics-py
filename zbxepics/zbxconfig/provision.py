@@ -243,5 +243,9 @@ class ZabbixProvisionConfigJSON(object):
             trigger_ = copy.deepcopy(default)
             trigger_.update(trigger)
             trigger_['host'] = hostname
+            if 'dependencies' in trigger_:
+                for trg in trigger_['dependencies']:
+                    if 'host' not in trg:
+                        trg['host'] = hostname
             triggers_.append(trigger_)
         return triggers_
