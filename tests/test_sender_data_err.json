@@ -11,17 +11,20 @@
         {
           "name": "EPICS Heart beat",
           "pv": "ET_dummyHost:heartbeat", 
-          "update": "monitor"
+          "update": "monitor",
+          "item_key": "dummy.heartbeat"
         },
         {
           "name": "EPICS ai1",
           "update": 5,
-          "pv": "ET_dummyHost:ai1"
+          "pv": "ET_dummyHost:ai1",
+          "item_key": "dummy.ai1"
         },
         {
           "name": "EPICS ao1",
           "pv": "ET_dummyHost:ao1",
-          "func": "max"
+          "func": "max",
+          "item_key": "dummy.ao1"
         },
         {
           "name": "EPICS long1",

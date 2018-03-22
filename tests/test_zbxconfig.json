@@ -1,8 +1,9 @@
 {
   "default": {
     "item": {
-      "interval": "30.0",
-      "func": "last"
+      "type": 2,
+      "value_type": 0,
+      "trapper_hosts": ""
     }
   },
   "hostgroups": [
@@ -17,9 +18,6 @@
               "dns": ""
             },
             "item": {
-              "type": 2,
-              "value_type": 0,
-              "trapper_hosts": "",
               "history": "1d"
             },
             "trigger": {
@@ -41,10 +39,7 @@
               "items": [
                 {
                   "name": "host trapper item example",
-                  "key_": "dummy.trapper1",
-                  "pv": "dummyHost:COUNTUP5",
-                  "interval": "5.0",
-                  "func": "max"
+                  "key_": "dummy.trapper1"
                 },
                 {
                   "name": "host zabbox agent item example",
@@ -139,21 +134,15 @@
               "items": [
                 {
                   "name": "template item countup5",
-                  "key_": "dummy.countup5",
-                  "pv": "dummyHost:COUNTUP5",
-                  "interval": "5.0",
-                  "func": "max"
+                  "key_": "dummy.countup5"
                 },
                 {
                   "name": "template item countup10",
-                  "key_": "dummy.countup10",
-                  "pv": "dummyHost:COUNTUP10"
+                  "key_": "dummy.countup10"
                 },
                 {
                   "name": "template item Heartbeat",
-                  "key_": "dummy.heartbeat",
-                  "pv": "dummyHost:HEARTBEAT",
-                  "interval": "monitor"
+                  "key_": "dummy.heartbeat"
                 }
               ]
             }
