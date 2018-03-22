@@ -3,7 +3,7 @@
 import unittest
 import os
 
-from zbxepics.zbxconfig import ZabbixConfigReaderJSON
+from zbxepics.casender import ZabbixConfigReaderJSON
 
 
 class TestZabbixConfigReader(unittest.TestCase):

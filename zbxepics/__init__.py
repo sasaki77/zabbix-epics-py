@@ -1,2 +1,1 @@
-from .casender import ZabbixSenderCA
-from .zbxconfig import ZabbixConfigReaderJSON
+from .casender import ZabbixSenderCA, ZabbixConfigReaderJSON
