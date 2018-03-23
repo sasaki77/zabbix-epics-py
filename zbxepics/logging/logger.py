@@ -1,4 +1,6 @@
+import os
 import logging
+import logging.config
 
 
 class Logger(object):
@@ -13,14 +15,20 @@ class Logger(object):
     LEVELS = [NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL]
 
     def __init__(self):
-        stream_handler = logging.StreamHandler()
-        formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s',
-            '%Y-%m-%d %H:%M:%S')
-        stream_handler.setFormatter(formatter)
-
         self.logger = logging.getLogger(__name__)
-        self.logger.addHandler(stream_handler)
+
+        self.debug('Create logger(%s)', self.logger.name)
+
+    def set_config(self, config_file):
+        # If value is `True` then default config path will used
+        if config_file and isinstance(config_file, bool):
+            dir_path = os.path.dirname(__file__)
+            config_file = os.path.join(dir_path, 'logging.conf')
+        # Set configuration for logging
+        logging.config.fileConfig(config_file,
+                                  disable_existing_loggers=False)
+
+        self.debug('Changed configuration for logger(%s)', self.logger.name)
 
     def set_level(self, level):
         if level in self.LEVELS:
