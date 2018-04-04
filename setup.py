@@ -9,4 +9,5 @@ setup(name='zbxepics',
       author_email='kan-hiro@post.kek.jp',
       packages=['zbxepics', 'zbxepics.casender', 'zbxepics.casender.item',
                 'zbxepics.logging', 'zbxepics.zbxconfig',
-                'zbxepics.zbxconfig.apiobjects'])
+                'zbxepics.zbxconfig.apiobjects'],
+      package_data={'zbxepics': ['logging/logging.conf']})
