@@ -39,6 +39,12 @@ class ZabbixProvisionCA(object):
         self.__trigger.create_or_update(triggers)
 
     def exec_provision(self, config):
+        """Make provision for zabbix configurations.
+
+        :type config: dict
+        :param config: Zabbix configurations. required keys
+         'hostgroups', 'hosts', 'templates'
+        """
         if config is None:
             return
 
@@ -80,6 +86,15 @@ class ZabbixProvisionConfigJSON(object):
         return orig_dict
 
     def load_config_from_json(self, config_file):
+        """Load zabbix configuration from config file at JSON.
+
+        :type config_file: str
+        :param config_file: Path to config file to load
+         configurations from.
+
+        :rtype: dict
+        :return: Configurations loaded from config file.
+        """
         config = {}
         config['hostgroups'] = []
         config['hosts'] = []
