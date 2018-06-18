@@ -9,6 +9,7 @@ from . import apiobjects
 
 
 class ZabbixProvisionCA(object):
+    """ZabbixProvisionCA class, Provision zabbix configuration."""
 
     def __init__(self, url=None, user=None, password=None):
         self.__zbx_api = ZabbixAPI(url, user=user, password=password)
@@ -72,6 +73,10 @@ class ZabbixProvisionCA(object):
 
 
 class ZabbixProvisionConfigJSON(object):
+    """ZabbixProvisionConfigJSON class.
+
+    Load configuration from JSON.
+    """
 
     def __update_nested_dict(self, orig_dict, new_dict):
         for key, val in new_dict.items():

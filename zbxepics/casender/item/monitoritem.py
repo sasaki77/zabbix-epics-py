@@ -5,6 +5,8 @@ from pyzabbix import ZabbixMetric
 
 
 class MonitorItem(object):
+    """DocStrings for MonitorItem class."""
+
     def __init__(self, host, pvname, item_key=None):
         self.host = str(host)
         pvname_ = str(pvname)

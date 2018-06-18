@@ -12,8 +12,25 @@ from zbxepics.casender.item import MonitorItemFactory, IntervalItemFactory
 
 
 class ZabbixSenderCA(object):
+    """ZabbixSenderCA class, send metrics to Zabbix server.
 
-    """Docstring for ZabbixSenderCA. """
+    :type zabbix_server: str
+    :param zabbix_server: Zabbix server ip address. Default: `127.0.0.1`
+
+    :type zabbix_port: int
+    :param zabbix_port: Zabbix server port. Default: `10051`
+
+    :type use_config: str
+    :param use_config: Path to zabbix_agentd.conf file to load settings from.
+         If value is `True` then default config path will used:
+         /etc/zabbix/zabbix_agentd.conf
+
+    :type items: dict
+    :param items: List of sender items.
+                   (Prerequisite keys: host pv interval,
+                    Optional: item_key func)
+
+    """
 
     def __init__(self, zabbix_server='127.0.0.1', zabbix_port=10051,
                  use_config=None, items=None):
@@ -31,6 +48,7 @@ class ZabbixSenderCA(object):
                 self.add_item(item)
 
     def add_item(self, item):
+        """Add sender items to container."""
         try:
             host = item['host']
             pvname = item['pv']
@@ -53,6 +71,7 @@ class ZabbixSenderCA(object):
         return sender_item
 
     def __get_interval_items(self):
+        """Return a list of items to be executed."""
         if self._interval_item_q.empty():
             return []
 
@@ -68,6 +87,7 @@ class ZabbixSenderCA(object):
         return items
 
     def _create_metrics(self, items):
+        """Return a list of metrics from item."""
         metrics = []
 
         for item in items:
@@ -80,6 +100,7 @@ class ZabbixSenderCA(object):
         return metrics
 
     def _send_metrics(self, items):
+        """Send metrics to Zabbix server."""
         metrics = self._create_metrics(items)
         if not metrics:
             return
@@ -119,7 +140,7 @@ class ZabbixSenderCA(object):
         self._is_running = False
 
     def stop(self):
-        """Stops the run loop."""
+        """Stop the run loop."""
         self.__stop_request = True
         self.__is_stop.wait()
 
