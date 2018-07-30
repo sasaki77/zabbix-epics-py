@@ -1,17 +1,25 @@
 # Zabbix sender for EPICS-CA
 
-## Prerequisite modules
+This package allows to send metrics to Zabbix server from EPICS records via Channel Access.
 
-* future
-* py-zabbix >= 1.1.2
-* pyepics
+## Installing
 
-## Platform
+Simple install is below.
 
-* Python 2.x or 3.x
+```bash
+pip install git+https://github.com/sasaki77/zabbix-epics-py.git
+```
 
-## Install
+Or clone this package and install it.
 
-    $ git clone http://pfrsoftrepo.kek.jp/gitlab/hirose/zabbix-epics-py.git
-    $ cd zabbix-epics-py
-    $ python setup.py install
+```bash
+# clone the repository
+git clone https://github.com/sasaki77/gfhttpva
+cd gfhttpva
+# install gfhttpva
+pip install -e .
+```
+
+## Usage
+
+## Test
