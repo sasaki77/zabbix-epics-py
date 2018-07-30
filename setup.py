@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 setup(
     name='zbxepics',
     version='0.0.1',
-    url='',
+    url='https://github.com/sasaki77/zabbix-epics-py',
     license=license,
     maintainer='Shinya Sasaki',
     maintainer_email='shinya.sasaki@kek.jp',
