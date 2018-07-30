@@ -1,13 +1,26 @@
-#!/usr/bin/env python
+from setuptools import find_packages, setup
 
-from distutils.core import setup
+with open('README.md') as f:
+        readme = f.read()
 
-setup(name='zbxepics',
-      version='0.0.1',
-      description='Zabbix-EPICS for Python',
-      author='Masaya Hirose',
-      author_email='kan-hiro@post.kek.jp',
-      packages=['zbxepics', 'zbxepics.casender', 'zbxepics.casender.item',
-                'zbxepics.logging', 'zbxepics.zbxconfig',
-                'zbxepics.zbxconfig.apiobjects'],
-      package_data={'zbxepics': ['logging/logging.conf']})
+with open('LICENSE') as f:
+        license = f.read()
+
+setup(
+    name='zbxepics',
+    version='0.0.1',
+    url='',
+    license=license,
+    maintainer='Shinya Sasaki',
+    maintainer_email='shinya.sasaki@kek.jp',
+    description='Zabbix-EPICS for Python',
+    long_description=readme,
+    packages=find_packages(exclude=('tests', 'scripts')),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
+        'future',
+        'py-zabbix>=1.1.2',
+        'pyepics',
+    ],
+)
