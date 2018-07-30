@@ -3,6 +3,10 @@ from . import intervalitem
 
 
 class MonitorItemFactory:
+    """MonitorItemFactory class.
+
+    Factory for creating monitor item.
+    """
 
     @classmethod
     def create_item(cls, host, pvname, item_key=None):
@@ -10,6 +14,11 @@ class MonitorItemFactory:
 
 
 class IntervalItemFactory:
+    """IntervalItemFactory class.
+
+    Factory for creating interval item.
+    """
+
     DEFAULT_FUNCTION = 'last'
 
     _functions = {'last': intervalitem.IntervalItemHasLast,

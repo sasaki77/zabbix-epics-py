@@ -8,6 +8,8 @@ from pyzabbix import ZabbixMetric
 
 
 class IntervalItem(object):
+    """DocStrings for IntervalItem class."""
+
     DEFAULT_INTERVAL = 30.0
 
     def __init__(self, host, pvname, interval=None, item_key=None):
@@ -39,7 +41,7 @@ class IntervalItem(object):
             self._setup()
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
-        """Called when PV value changed.
+        """Call when PV value changed.
 
         May be overridden by a subclass.
 

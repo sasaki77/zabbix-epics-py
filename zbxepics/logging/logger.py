@@ -4,6 +4,7 @@ import logging.config
 
 
 class Logger(object):
+    """DocStrings for Logger class."""
 
     NOTSET = logging.NOTSET
     DEBUG = logging.DEBUG

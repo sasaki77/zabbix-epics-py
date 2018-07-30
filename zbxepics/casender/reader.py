@@ -5,6 +5,7 @@ from zbxepics.logging import logger
 
 
 class ZabbixConfigReader(object):
+    """ZabbixConfigReader class, load configuration from file."""
 
     def __init__(self):
         self._items = []
@@ -30,10 +31,19 @@ class ZabbixConfigReader(object):
 
     # Override these methods to implement other reader.
     def read_config(self, config_file):
+        """
+        Read configuration from config_file.
+
+        May be overridden by a subclass.
+        """
         pass
 
 
 class ZabbixConfigReaderJSON(ZabbixConfigReader):
+    """ZabbixConfigReaderJSON class.
+
+    Load configuration from JSON file.
+    """
 
     def __init__(self, config_file):
         super(ZabbixConfigReaderJSON, self).__init__()
