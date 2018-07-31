@@ -52,6 +52,12 @@ Avalilable funcs are below.
 For example, monitored pv is processed 3 times and its value changed to 1, 2 and 3. Then the value sent to Zabbix is 2 if `func` is set to avg.
 
 ## Test
+
+Some part of tests run HTTP server on 30051 port to emulate Zabbix server.
+
+You should concern localhost http access to test correctly.
+(e.g. HTTP proxy settings)
+
 ```bash
 python -m unittest discover tests/
 ```
