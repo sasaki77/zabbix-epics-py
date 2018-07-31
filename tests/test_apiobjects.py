@@ -45,7 +45,7 @@ class TestAPIObjects(unittest.TestCase):
 
         params = {'name': 'Dummy Hosts'}
         groupid = hostgroup.create_one(params)
-        self.assertIsNotNone(groupid)
+        self.assertIsNone(groupid)
 
     def test_hostgroup_update(self):
         hostgroup = apiobjects.HostGroup(self._zbx_api)
@@ -67,7 +67,7 @@ class TestAPIObjects(unittest.TestCase):
                   'interfaces': [interface],
                   'groups': ['Dummy Group']}
         hostid = host.create_one(params)
-        self.assertIsNotNone(hostid)
+        self.assertIsNone(hostid)
 
     def test_host_update(self):
         host = apiobjects.Host(self._zbx_api)
@@ -95,7 +95,7 @@ class TestAPIObjects(unittest.TestCase):
                   'value_type': 0,
                   'trapper_hosts': ''}
         itemid = item.create_one(params)
-        self.assertIsNotNone(itemid)
+        self.assertIsNone(itemid)
 
     def test_item_update(self):
         item = apiobjects.Item(self._zbx_api)
@@ -120,7 +120,7 @@ class TestAPIObjects(unittest.TestCase):
         params = {'name': 'Dummy Status',
                   'host': 'dummyServerHost'}
         appid = app.create_one(params)
-        self.assertIsNotNone(appid)
+        self.assertIsNone(appid)
 
     def test_application_update(self):
         app = apiobjects.Application(self._zbx_api)
@@ -145,7 +145,7 @@ class TestAPIObjects(unittest.TestCase):
                   'recovery_expression': '',
                   'manual_close': '0'}
         triggerid = trigger.create_one(params)
-        self.assertIsNotNone(triggerid)
+        self.assertIsNone(triggerid)
 
     def test_trigger_update(self):
         trigger = apiobjects.Trigger(self._zbx_api)
@@ -169,7 +169,7 @@ class TestAPIObjects(unittest.TestCase):
         params = {'name': 'Template dummy',
                   'groups': ['Template/Dummy']}
         templateid = template.create_one(params)
-        self.assertIsNotNone(templateid)
+        self.assertIsNone(templateid)
 
     def test_template_update(self):
         template = apiobjects.Template(self._zbx_api)
