@@ -21,7 +21,7 @@ class IntervalItem(object):
         pv object to be monitored
     item_key : str
         item key of item
-    interval : int
+    interval : float
         interval in senconds to send
     value : obj
         value to be got
@@ -33,7 +33,7 @@ class IntervalItem(object):
 
     DEFAULT_INTERVAL = 30.0
 
-    def __init__(self, host, pvname, interval=None, item_key=None):
+    def __init__(self, host, pvname, interval=30.0, item_key=None):
         """
         Parameters
         ----------
@@ -41,10 +41,10 @@ class IntervalItem(object):
             host name of item
         pvname : str
             pv name to monitor
-        interval : int (default is None)
-            interval in senconds to send
-        item_key : str (default is None)
-            item key of item
+        interval : float
+            interval in senconds to send (default is 30.0)
+        item_key : str
+            item key of item (default is None)
         """
 
         self.host = str(host)
@@ -142,7 +142,7 @@ class IntervalItem(object):
         return [zm]
 
 
-class IntervalItemHasLast(IntervalItem):
+class IntervalItemLast(IntervalItem):
     """a class for last interval item"""
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
@@ -160,7 +160,7 @@ class IntervalItemHasLast(IntervalItem):
             self._value = value
 
 
-class IntervalItemHasMin(IntervalItem):
+class IntervalItemMin(IntervalItem):
     """a class for min interval item"""
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
@@ -179,7 +179,7 @@ class IntervalItemHasMin(IntervalItem):
                            else min(self._value, value))
 
 
-class IntervalItemHasMax(IntervalItem):
+class IntervalItemMax(IntervalItem):
     """a class for max interval item"""
 
     def _on_value_change(self, value=None, timestamp=None, **kw):
@@ -198,7 +198,7 @@ class IntervalItemHasMax(IntervalItem):
                            else max(self._value, value))
 
 
-class IntervalItemHasAvg(IntervalItem):
+class IntervalItemAvg(IntervalItem):
     """
     a class for average interval item
 

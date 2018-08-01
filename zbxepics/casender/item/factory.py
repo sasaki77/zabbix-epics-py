@@ -23,14 +23,14 @@ class IntervalItemFactory:
 
     DEFAULT_FUNCTION = 'last'
 
-    _functions = {'last': intervalitem.IntervalItemHasLast,
-                  'min': intervalitem.IntervalItemHasMin,
-                  'max': intervalitem.IntervalItemHasMax,
-                  'avg': intervalitem.IntervalItemHasAvg}
+    _functions = {'last': intervalitem.IntervalItemLast,
+                  'min': intervalitem.IntervalItemMin,
+                  'max': intervalitem.IntervalItemMax,
+                  'avg': intervalitem.IntervalItemAvg}
 
     @classmethod
-    def create_item(cls, host, pvname, interval=None,
-                    func=None, item_key=None):
+    def create_item(cls, host, pvname, interval=30.0,
+                    func='last', item_key=None):
         """Create interval item
 
         Parameters
@@ -39,12 +39,12 @@ class IntervalItemFactory:
             host name of item
         pvname : str
             pv name to monitor
-        interval : int
-            interval in senconds to send
+        interval : float
+            interval in senconds to send  (default is 30)
         func : str
-            function to apply item buffer
+            function to apply item buffer (default is 'last')
         item_key : str
-            item key of item
+            item key of item (default is None)
 
         Returns
         -------

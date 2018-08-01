@@ -28,8 +28,8 @@ class MonitorItem(object):
         ----------
         host : str
             host name of item
-        pvname : str
-            pv name to monitor
+        pv : epics.PV
+            pv to monitor
         item_key : str
             item key of item
         """
@@ -37,9 +37,7 @@ class MonitorItem(object):
         self.host = str(host)
         pvname_ = str(pvname)
         self.pv = PV(pvname_, callback=self._on_value_change)
-        self.item_key = item_key
-        if self.item_key is None:
-            self.item_key = pvname_
+        self.item_key = pvname_ if item_key is None else item_key
 
         self.__metrics_q = Queue()
 
