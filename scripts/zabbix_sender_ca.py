@@ -1,6 +1,8 @@
 import argparse
 
-from zbxepics import ZabbixSenderCA, ZabbixConfigReaderJSON
+from zbxepics import ZabbixSenderCA
+
+from reader import ZabbixConfigReaderJSON
 
 
 def parseArgs():
