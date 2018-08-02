@@ -1,0 +1,187 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ZabbixSenderCA &#8212; zabbix-epics-py 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="zbxepics.casender" href="casender.html" />
+    <link rel="prev" title="zabbix-epics-py - Zabbix sender for EPICS-CA" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="casender.html" title="zbxepics.casender"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="zabbix-epics-py - Zabbix sender for EPICS-CA"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">zabbix-epics-py 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="zabbixsenderca">
+<h1>ZabbixSenderCA<a class="headerlink" href="#zabbixsenderca" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="zbxepics.ZabbixSenderCA">
+<em class="property">class </em><code class="descclassname">zbxepics.</code><code class="descname">ZabbixSenderCA</code><span class="sig-paren">(</span><em>zabbix_server='127.0.0.1'</em>, <em>zabbix_port=10051</em>, <em>use_config=None</em>, <em>items=None</em><span class="sig-paren">)</span><a class="headerlink" href="#zbxepics.ZabbixSenderCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>ZabbixSenderCA class, send metrics to Zabbix server.</p>
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA._monitor_items">
+<code class="descname">_monitor_items</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA._monitor_items" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list of zbxepics.casender.item.MonitorItem</em> – list of monitor items</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA._interval_item_q">
+<code class="descname">_interval_item_q</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA._interval_item_q" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>zbxepics.casender.peekqueue.PriorityPeekQueue</em> – priority queue of interval items</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA.zbx_sender">
+<code class="descname">zbx_sender</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA.zbx_sender" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>pyzabbix.ZabbixSender</em> – Zabbix sender to send metrics to Zabbix server</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA.__is_stop">
+<code class="descname">__is_stop</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA.__is_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>threading.Event</em> – whether server is stop or not</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA.__stop_request">
+<code class="descname">__stop_request</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA.__stop_request" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> – to stop running server</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA._is_running">
+<code class="descname">_is_running</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA._is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> – whether server is running or not</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zbxepics.ZabbixSenderCA.add_item">
+<code class="descname">add_item</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#zbxepics.ZabbixSenderCA.add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add sender item to container</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<em>dict</em>) – dict of item with following keys
+(‘host’, ‘pv’, ‘interval’, ‘item_key’, ‘func’)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Added item</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">item.MonitorItem or item.IntervalItem</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="zbxepics.ZabbixSenderCA.is_running">
+<code class="descname">is_running</code><a class="headerlink" href="#zbxepics.ZabbixSenderCA.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> – Whether server is running or not</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zbxepics.ZabbixSenderCA.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#zbxepics.ZabbixSenderCA.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send metrics to Zabbix server</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="zbxepics.ZabbixSenderCA.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#zbxepics.ZabbixSenderCA.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the run loop</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">zabbix-epics-py - Zabbix sender for EPICS-CA</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="casender.html"
+                        title="next chapter">zbxepics.casender</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/zabbixsenderca.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="casender.html" title="zbxepics.casender"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="zabbix-epics-py - Zabbix sender for EPICS-CA"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">zabbix-epics-py 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Shinya Sasaki.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+    </div>
+  </body>
+</html>
