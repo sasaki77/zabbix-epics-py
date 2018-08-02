@@ -55,3 +55,6 @@ venv.bak/
 [._]*.sw[a-p]
 [._]s[a-v][a-z]
 [._]sw[a-p]
+
+# documentations
+docs/_build
