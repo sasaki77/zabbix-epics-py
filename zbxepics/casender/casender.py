@@ -164,7 +164,7 @@ class ZabbixSenderCA(object):
                      result)
 
     def run(self):
-        """Send metrics to Zabbix server"""
+        """Start ca sender server"""
 
         if (not self._monitor_items
                 and self._interval_item_q.empty()):
