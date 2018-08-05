@@ -2,6 +2,8 @@
 
 This package allows to send metrics to Zabbix server from EPICS records via Channel Access.
 
+See [docmentation](https://sasaki77.github.io/zabbix-epics-py/)
+
 ## Installing
 
 Simple install is below.
