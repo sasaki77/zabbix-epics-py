@@ -3,9 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-zabbix-epics-py - Zabbix sender for EPICS-CA
-============================================
-zabbix-epics-py is server program to send metrics to Zabbix server from EPICS records via Channel Access.
+.. mdinclude:: ../README.md
 
 Links
 =====
