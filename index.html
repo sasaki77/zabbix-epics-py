@@ -148,7 +148,7 @@
             
   <div class="section" id="zabbix-sender-for-epics-ca">
 <h1>Zabbix sender for EPICS-CA<a class="headerlink" href="#zabbix-sender-for-epics-ca" title="Permalink to this headline">¶</a></h1>
-<p>This package allows to send metrics to Zabbix server from EPICS records via Channel Access.</p>
+<p>This package allows to send metrics to a Zabbix server from EPICS records via Channel Access.</p>
 <p>See <a class="reference external" href="https://sasaki77.github.io/zabbix-epics-py/">docmentation</a></p>
 <div class="section" id="installing">
 <h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
@@ -168,9 +168,9 @@ pip install -e .
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Before using this program, you should create hosts and items in Zabbix.
-Type of item must be set to Zabbix trapper.</p>
-<p>Below is simple example usage.
-Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</span></code> are sent to Zabbix server at 30 sec intervals and metrics are stored to <code class="docutils literal notranslate"><span class="pre">zabbix-epics-py-test.item</span></code> key of <code class="docutils literal notranslate"><span class="pre">dummyHost</span></code>.</p>
+Type of the items must be set to Zabbix trapper.</p>
+<p>Below is a simple example usage.
+Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</span></code> are sent to a Zabbix server at 30 sec intervals and metrics are stored to <code class="docutils literal notranslate"><span class="pre">zabbix-epics-py-test.item</span></code> key of <code class="docutils literal notranslate"><span class="pre">dummyHost</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">zbxepics</span> <span class="kn">import</span> <span class="n">ZabbixSenderCA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">port</span> <span class="o">=</span> <span class="mi">10051</span>
@@ -180,8 +180,8 @@ Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sender</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">interval</span></code> is interval in seconds between sending metrics to Zabbix. If <code class="docutils literal notranslate"><span class="pre">interval</span></code> is set to <code class="docutils literal notranslate"><span class="pre">monitor</span></code>, metrics are sent every monitor update.</p>
-<p><code class="docutils literal notranslate"><span class="pre">func</span></code> determines a function to be applied to monitored value buffer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">interval</span></code> is an interval in seconds between sending metrics to Zabbix. If <code class="docutils literal notranslate"><span class="pre">interval</span></code> is set to <code class="docutils literal notranslate"><span class="pre">monitor</span></code>, metrics are sent every monitor update.</p>
+<p><code class="docutils literal notranslate"><span class="pre">func</span></code> determines a function to be applied to a monitored value buffer.</p>
 <p>Avalilable funcs are below.</p>
 <ul class="simple">
 <li>last</li>
@@ -189,11 +189,11 @@ Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</
 <li>max</li>
 <li>avg</li>
 </ul>
-<p>For example, monitored pv is processed 3 times and its value changed to 1, 2 and 3. Then the value sent to Zabbix is 2 if <code class="docutils literal notranslate"><span class="pre">func</span></code> is set to avg.</p>
+<p>For example, a monitored pv is processed 3 times and its value changed to 1, 2 and 3. Then the value sent to Zabbix is 2 if <code class="docutils literal notranslate"><span class="pre">func</span></code> is set to avg.</p>
 </div>
 <div class="section" id="test">
 <h2>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h2>
-<p>Some part of tests run HTTP server on 30051 port to emulate Zabbix server.</p>
+<p>Some part of tests run HTTP server on 30051 port to emulate a Zabbix server.</p>
 <p>You should concern localhost http access to test correctly.
 (e.g. HTTP proxy settings)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m unittest discover tests/
