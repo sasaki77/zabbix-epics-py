@@ -16,9 +16,9 @@ Or clone this package and install it.
 
 ```bash
 # clone the repository
-git clone https://github.com/sasaki77/gfhttpva
-cd gfhttpva
-# install gfhttpva
+git clone https://github.com/sasaki77/zabbix-epics-py
+cd zabbix-epics-py
+# install zabbix-epics-py
 pip install -e .
 ```
 
