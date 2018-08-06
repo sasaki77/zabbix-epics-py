@@ -16,6 +16,7 @@ Document
 ========
 .. toctree::
    :maxdepth: 2
+   :caption: zabbix-epics-py API
 
    zabbixsenderca
    casender
