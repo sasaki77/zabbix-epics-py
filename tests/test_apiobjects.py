@@ -11,7 +11,7 @@ except ImportError:
 from pyzabbix import ZabbixAPI
 
 import zbxepics.zbxconfig.apiobjects as apiobjects
-from httpserver import ZabbixHTTPRequestHandler
+from zbxhttpserver import ZabbixHTTPRequestHandler
 
 
 class TestAPIObjects(unittest.TestCase):

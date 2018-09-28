@@ -11,7 +11,7 @@ from socketserver import TCPServer
 
 from epics import ca
 
-import server
+import zbxstreamserver
 from ioccontrol import IocControl
 from zbxepics.casender import ZabbixSenderCA
 from zbxepics.casender.item.monitoritem import MonitorItem
@@ -39,7 +39,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         self._zbx_host = 'localhost'
         self._zbx_port = 30051
         server_address = (self._zbx_host, self._zbx_port)
-        handler = server.SimpleZabbixServerHandler
+        handler = zbxstreamserver.SimpleZabbixServerHandler
 
         TCPServer.allow_reuse_address = True
         self.__zbxserver = TCPServer(server_address, handler)
@@ -137,7 +137,7 @@ class TestZabbixSenderCA(unittest.TestCase):
         sender.stop()
         th_sender.join()
 
-        self.assertEqual(server.metrics_received, 5)
+        self.assertEqual(zbxstreamserver.metrics_received, 5)
 
         self.__stop_server()
 

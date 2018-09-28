@@ -9,7 +9,7 @@ except ImportError:
     import dummy_threading as threading
 
 import zbxepics.zbxconfig.provision as provision
-from httpserver import ZabbixHTTPRequestHandler
+from zbxhttpserver import ZabbixHTTPRequestHandler
 
 
 class TestZabbixProvisionCA(unittest.TestCase):
