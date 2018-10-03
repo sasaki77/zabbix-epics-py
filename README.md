@@ -76,7 +76,6 @@ coverage report -m
 ## Build Documentation
 ```
 pip install sphinx m2r sphinx_rtd_theme
-git submodule add -f -b gh-pages http://github.com/sasaki77/zabbix-epics-py doc/_build/html
 cd doc/_build/html
 make html
 ```
