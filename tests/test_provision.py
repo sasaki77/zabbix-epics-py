@@ -1,68 +1,32 @@
-#!/usr/bin/env python
-
-import unittest
 import os
-from http.server import HTTPServer
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 
 import zbxepics.zbxconfig.provision as provision
-from zbxhttpserver import ZabbixHTTPRequestHandler
 
 
-class TestZabbixProvisionCA(unittest.TestCase):
+def test_load_config():
+    dir_path = os.path.dirname(__file__)
+    config_file = os.path.join(dir_path, 'test_zbxconfig.json')
+    loader = provision.ZabbixProvisionConfigJSON()
+    config_data = loader.load_config_from_json(config_file)
 
-    def setUp(self):
-        self.__server_address = ('localhost', 30051)
-        handler = ZabbixHTTPRequestHandler
+    assert config_data is not None
 
-        HTTPServer.allow_reuse_address = True
-        self.__httpd = HTTPServer(self.__server_address, handler)
-        thread_target = self.__httpd.serve_forever
-        self.__th_server = threading.Thread(target=thread_target)
-        self.__th_server.daemon = True
-        self.__th_server.start()
-
-    def tearDown(self):
-        self.__httpd.shutdown()
-        self.__th_server.join()
-        self.__httpd.server_close()
-        pass
-
-    def test_load_config(self):
-        dir_path = os.path.dirname(__file__)
-        config_file = os.path.join(dir_path, 'test_zbxconfig.json')
-        loader = provision.ZabbixProvisionConfigJSON()
-        config_data = loader.load_config_from_json(config_file)
-        self.assertIsNotNone(config_data)
-        fileds = ['hostgroups', 'hosts', 'templates']
-        self.assertEqual(sorted(config_data.keys()), sorted(fileds))
-
-        # url = 'http://localhost/zabbix'
-        # provisioner = provision.ZabbixProvisionCA(url=url, user='report',
-        #                                           password='report')
-        # provisioner.exec_provision(config_data)
-
-    def testA_init(self):
-        host, port = self.__server_address
-        url = 'http://{host}:{port}'.format(host=host, port=port)
-        provisioner = provision.ZabbixProvisionCA(url=url)
-        self.assertIsNotNone(provisioner)
-
-    def test_set_hostgroups(self):
-        host, port = self.__server_address
-        url = 'http://{host}:{port}'.format(host=host, port=port)
-        provisioner = provision.ZabbixProvisionCA(url=url)
-
-        params = [{'name': 'Dummy Group'}]
-        provisioner.set_hostgroups(params)
+    fileds = ['hostgroups', 'hosts', 'templates']
+    assert sorted(config_data.keys()) == sorted(fileds)
 
 
-def main():
-    unittest.main(verbosity=2)
+def testA_init(zbx_http):
+    host, port = zbx_http
+    url = 'http://{host}:{port}'.format(host=host, port=port)
+    provisioner = provision.ZabbixProvisionCA(url=url)
+
+    assert provisioner is not None
 
 
-if __name__ == '__main__':
-    main()
+def test_set_hostgroups(zbx_http):
+    host, port = zbx_http
+    url = 'http://{host}:{port}'.format(host=host, port=port)
+    provisioner = provision.ZabbixProvisionCA(url=url)
+
+    params = [{'name': 'Dummy Group'}]
+    provisioner.set_hostgroups(params)

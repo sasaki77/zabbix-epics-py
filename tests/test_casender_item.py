@@ -1,131 +1,88 @@
-#!/usr/bin/env python
-
-import unittest
-import os
 import time
 
-from epics import ca, PV
+import pytest
+from epics import PV
 
-from ioccontrol import IocControl
 from zbxepics.casender.item import MonitorItemFactory, IntervalItemFactory
 from zbxepics.casender.item.monitoritem import MonitorItem
 from zbxepics.casender.item.intervalitem import IntervalItem
 
 
-class TestZabbixSenderItem(unittest.TestCase):
+def test_casender_item_init_monitor():
+    item = (MonitorItemFactory
+            .create_item('host1', 'ET_dummyHost:ai1'))
 
-    def setUp(self):
-        dir_path = os.path.dirname(__file__)
-        db_file = os.path.join(dir_path, 'test.db')
-        ioc_arg_list = ['-m', 'head=ET_dummyHost', '-d', db_file]
-        self.__iocprocess = IocControl(arg_list=ioc_arg_list)
-        self.__iocprocess.start()
-        sport = str(IocControl.server_port)
-        os.environ['EPICS_CA_AUTO_ADDR_LIST'] = 'NO'
-        os.environ['EPICS_CA_ADDR_LIST'] = 'localhost:{}'.format(sport)
-        ca.initialize_libca()
-
-    def tearDown(self):
-        ca.finalize_libca()
-        self.__iocprocess.stop()
-
-    def testA_init_monitor(self):
-        item = (MonitorItemFactory
-                .create_item('host1', 'ET_dummyHost:ai1'))
-
-        self.assertIsInstance(item, MonitorItem)
-        self.assertEqual(item.host, 'host1')
-        self.assertIsInstance(item.pv, PV)
-        self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
-
-    def testA_init_interval(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:ai1',
-                                      5, 'last'))
-
-        self.assertIsInstance(item, IntervalItem)
-        self.assertEqual(item.host, 'host1')
-        self.assertIsInstance(item.pv, PV)
-        self.assertEqual(item.pv.pvname, 'ET_dummyHost:ai1')
-        self.assertEqual(item.interval, 5)
-
-    def testA_init_interval_default(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:ai1'))
-
-        default_interval = IntervalItem.DEFAULT_INTERVAL
-        self.assertEqual(item.interval, default_interval)
-
-        functions = IntervalItemFactory.list_of_functions()
-        default_function = IntervalItemFactory.DEFAULT_FUNCTION
-        self.assertEqual(type(item), functions[default_function])
-
-    def test_monitor_item_metrics(self):
-        item = (MonitorItemFactory
-                .create_item('host1', 'ET_dummyHost:long1'))
-
-        pv = item.pv
-        test_vals = [v for v in range(5)]
-        for val in test_vals:
-            pv.put(val, wait=True)
-        time.sleep(.05)
-
-        metrics = item.get_metrics()
-        self.assertEqual(len(metrics), 5)
-
-        for (zm, tval) in zip(metrics, test_vals):
-            self.assertEqual(zm.host, item.host)
-            self.assertEqual(zm.key, item.item_key)
-            self.assertEqual(zm.value, str(tval))
-
-    def test_interval_item_has_last(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:long1',
-                                      func='last'))
-
-        self.__test_interval_item(item, range(5), '4')
-
-    def test_interval_item_has_min(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:long1',
-                                      func='min'))
-
-        self.__test_interval_item(item, range(5), '0')
-
-    def test_interval_item_has_max(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:long1',
-                                      func='max'))
-
-        self.__test_interval_item(item, range(5), '4')
-
-    def test_interval_item_has_avg(self):
-        item = (IntervalItemFactory
-                .create_item('host1', 'ET_dummyHost:long1',
-                                      func='avg'))
-
-        self.__test_interval_item(item, range(10), '4.5')
-
-    def __test_interval_item(self, item, test_vals, result_value):
-        pv = item.pv
-        for val in test_vals:
-            pv.put(val, wait=True)
-        time.sleep(.05)
-
-        metrics = item.get_metrics()
-        self.assertEqual(len(metrics), 1)
-        self.assertEqual(metrics[0].host, item.host)
-        self.assertEqual(metrics[0].key, item.item_key)
-        self.assertEqual(metrics[0].value, result_value)
-
-        pv.disconnect()
-        metrics = item.get_metrics()
-        self.assertEqual(metrics, [])
+    assert isinstance(item, MonitorItem)
+    assert item.host == 'host1'
+    assert isinstance(item.pv, PV)
+    assert item.pv.pvname == 'ET_dummyHost:ai1'
 
 
-def main():
-    unittest.main(verbosity=2)
+def test_casender_item_init_interval():
+    item = (IntervalItemFactory
+            .create_item('host1', 'ET_dummyHost:ai1',
+                                  5, 'last'))
+
+    assert isinstance(item, IntervalItem)
+    assert item.host == 'host1'
+    assert isinstance(item.pv, PV)
+    assert item.pv.pvname == 'ET_dummyHost:ai1'
+    assert item.interval == 5
 
 
-if __name__ == '__main__':
-    main()
+def test_casender_item_init_interval_default():
+    item = (IntervalItemFactory
+            .create_item('host1', 'ET_dummyHost:ai1'))
+
+    default_interval = IntervalItem.DEFAULT_INTERVAL
+    assert item.interval == default_interval
+
+    functions = IntervalItemFactory.list_of_functions()
+    default_function = IntervalItemFactory.DEFAULT_FUNCTION
+    assert type(item) == functions[default_function]
+
+
+def test_casender_item_monitor_item_metrics(softioc, caclient):
+    item = (MonitorItemFactory
+            .create_item('host1', 'ET_dummyHost:long1'))
+
+    pv = item.pv
+    test_vals = [v for v in range(5)]
+    for val in test_vals:
+        pv.put(val, wait=True)
+    time.sleep(.05)
+
+    metrics = item.get_metrics()
+    assert len(metrics) == 5
+
+    for (zm, tval) in zip(metrics, test_vals):
+        assert zm.host == item.host
+        assert zm.key == item.item_key
+        assert zm.value == str(tval)
+
+
+@pytest.mark.parametrize('func,values,result', [
+    ('last', [0, 1, 2, 3, 4], '4'),
+    ('min', [0, 1, 2, 3, 4], '0'),
+    ('max', [0, 1, 2, 3, 4], '4'),
+    ('avg', [0, 1, 2, 3, 4], '2.0'),
+])
+def test_casender_item_interval_item(softioc, caclient, func, values, result):
+    item = (IntervalItemFactory
+            .create_item('host1', 'ET_dummyHost:long1', func=func))
+
+    pv = item.pv
+    for val in values:
+        pv.put(val, wait=True)
+    time.sleep(.05)
+
+    metrics = item.get_metrics()
+    assert len(metrics) == 1
+    assert metrics[0].host == item.host
+    assert metrics[0].key == item.item_key
+    assert metrics[0].value == result
+
+    pv.put(0, wait=True)
+    pv.disconnect()
+    metrics = item.get_metrics()
+    assert metrics == []

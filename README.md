@@ -60,6 +60,15 @@ Some part of tests run HTTP server on 30051 port to emulate a Zabbix server.
 You should concern localhost http access to test correctly.
 (e.g. HTTP proxy settings)
 
+Run without coverage:
 ```bash
-python -m unittest discover tests/
+pip install pytest
+pytest
+```
+
+Run with coverage:
+```bash
+pip install pytest pytest-cov
+pytest --cov gfhttpva
+coverage report -m
 ```
