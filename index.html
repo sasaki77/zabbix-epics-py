@@ -196,7 +196,15 @@ Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</
 <p>Some part of tests run HTTP server on 30051 port to emulate a Zabbix server.</p>
 <p>You should concern localhost http access to test correctly.
 (e.g. HTTP proxy settings)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m unittest discover tests/
+<p>Run without coverage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pytest
+pytest
+</pre></div>
+</div>
+<p>Run with coverage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pytest pytest-cov
+pytest --cov gfhttpva
+coverage report -m
 </pre></div>
 </div>
 </div>
@@ -287,6 +295,7 @@ Values of <code class="docutils literal notranslate"><span class="pre">TEST:PV</
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
