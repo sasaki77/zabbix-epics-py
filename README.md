@@ -69,7 +69,7 @@ pytest
 Run with coverage:
 ```bash
 pip install pytest pytest-cov
-pytest --cov gfhttpva
+pytest --cov zbxepics
 coverage report -m
 ```
 
