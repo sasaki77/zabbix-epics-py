@@ -6,7 +6,7 @@ except ImportError:
 
 import pytest
 
-import zbxstreamserver
+from . import zbxstreamserver
 from zbxepics.casender import ZabbixSenderCA
 from zbxepics.casender.item.monitoritem import MonitorItem
 from zbxepics.casender.item.intervalitem import IntervalItem

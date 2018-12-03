@@ -5,17 +5,18 @@ try:
 except ImportError:
     import dummy_threading as threading
 from socketserver import TCPServer
+import time
 
 import pytest
 from pyzabbix import ZabbixAPI
 from epics import ca
 
-import zbxstreamserver
-from ioccontrol import IocControl
-from zbxhttpserver import ZabbixHTTPRequestHandler
+from . import zbxstreamserver
+from .ioccontrol import IocControl
+from .zbxhttpserver import ZabbixHTTPRequestHandler
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def softioc():
     dir_path = os.path.dirname(__file__)
     db_file = os.path.join(dir_path, 'test.db')
@@ -29,7 +30,7 @@ def softioc():
     iocprocess.stop()
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def caclient():
     ca.finalize_libca()
 
