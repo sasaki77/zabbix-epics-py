@@ -35,7 +35,7 @@ Values of `TEST:PV` are sent to a Zabbix server at 30 sec intervals and metrics 
 >>> server_ip = '127.0.0.1'
 >>> port = 10051
 >>> config = False
->>> items = [dict(host='dummyHost', pv='TEST:PV', interval=30, item_key='zabbix-epics-py-test.item', func=last'}]
+>>> items = [dict(host='dummyHost', pv='TEST:PV', interval=30, item_key='zabbix-epics-py-test.item', func='last'}]
 >>> sender = ZabbixSenderCA(server_ip, port, config, items)
 >>> sender.run()
 ```
