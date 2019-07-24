@@ -32,11 +32,11 @@ Values of `TEST:PV` are sent to a Zabbix server at 30 sec intervals and metrics 
 
 ```python
 >>> from zbxepics import ZabbixSenderCA
->>> host = '127.0.0.1'
+>>> server_ip = '127.0.0.1'
 >>> port = 10051
 >>> config = False
->>> items = [{'host': 'dummyHost', 'pv': 'TEST:PV', "interval": 30, "item_key": 'zabbix-epics-py-test.item', 'func': 'last'}]
->>> sender = ZabbixSenderCA(host, port, config, items)
+>>> items = [dict(host='dummyHost', pv='TEST:PV', interval=30, item_key='zabbix-epics-py-test.item', func=last'}]
+>>> sender = ZabbixSenderCA(server_ip, port, config, items)
 >>> sender.run()
 ```
 
