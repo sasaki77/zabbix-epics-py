@@ -9,7 +9,7 @@ See [docmentation](https://sasaki77.github.io/zabbix-epics-py/)
 Simple install is below.
 
 ```bash
-pip install git+https://github.com/sasaki77/zabbix-epics-py.git
+pip install zabbix-epics-py
 ```
 
 Or clone this package and install it.
