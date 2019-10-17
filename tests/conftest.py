@@ -30,7 +30,7 @@ def softioc():
     iocprocess.stop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def caclient():
     ca.finalize_libca()
 

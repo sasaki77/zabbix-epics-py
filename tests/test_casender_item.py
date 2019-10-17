@@ -47,15 +47,16 @@ def test_casender_item_monitor_item_metrics(softioc, caclient):
             .create_item('host1', 'ET_dummyHost:long1'))
 
     pv = item.pv
+    pv.wait_for_connection(10)
     test_vals = [v for v in range(5)]
     for val in test_vals:
         pv.put(val, wait=True)
     time.sleep(.05)
 
     metrics = item.get_metrics()
-    assert len(metrics) == 5
+    assert len(metrics) == 6
 
-    for (zm, tval) in zip(metrics, test_vals):
+    for (zm, tval) in zip(metrics[1:0], test_vals):
         assert zm.host == item.host
         assert zm.key == item.item_key
         assert zm.value == str(tval)
@@ -72,6 +73,7 @@ def test_casender_item_interval_item(softioc, caclient, func, values, result):
             .create_item('host1', 'ET_dummyHost:long1', func=func))
 
     pv = item.pv
+    pv.wait_for_connection(10)
     for val in values:
         pv.put(val, wait=True)
     time.sleep(.05)

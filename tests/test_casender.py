@@ -86,6 +86,7 @@ def test_casender_sender_ca(softioc, caclient, zbx_stream):
     th_sender.start()
 
     pv = sender_item.pv
+    pv.wait_for_connection(10)
     for i in range(5):
         pv.put(i, wait=True)
     time.sleep(1)
@@ -93,4 +94,4 @@ def test_casender_sender_ca(softioc, caclient, zbx_stream):
     sender.stop()
     th_sender.join()
 
-    assert zbxstreamserver.metrics_received == 5
+    assert zbxstreamserver.metrics_received == 6
