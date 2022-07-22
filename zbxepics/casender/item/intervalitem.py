@@ -141,6 +141,9 @@ class IntervalItem(object):
         zm = ZabbixMetric(self.host, self.item_key, value)
         return [zm]
 
+    def __lt__(self, other):
+        return True
+
 
 class IntervalItemLast(IntervalItem):
     """a class for last interval item"""
