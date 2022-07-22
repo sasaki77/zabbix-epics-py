@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='zabbix-epics-py',
-    version='0.1.1',
+    version='1.0.0',
     url='https://github.com/sasaki77/zabbix-epics-py',
     maintainer='Shinya Sasaki',
     description='Zabbix-EPICS for Python',
