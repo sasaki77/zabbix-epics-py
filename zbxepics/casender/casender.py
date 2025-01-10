@@ -1,8 +1,5 @@
 import time
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 

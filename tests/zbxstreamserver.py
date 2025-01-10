@@ -3,10 +3,6 @@
 
 import struct
 import json
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 from socketserver import TCPServer, StreamRequestHandler
 
 from zbxepics.logging import logger

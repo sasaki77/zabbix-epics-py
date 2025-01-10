@@ -1,7 +1,4 @@
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 
 from epics import PV
 from pyzabbix import ZabbixMetric

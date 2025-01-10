@@ -1,8 +1,5 @@
 import time
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 
 import pytest
 
