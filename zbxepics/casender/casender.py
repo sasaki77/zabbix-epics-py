@@ -1,10 +1,7 @@
 import time
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 
-from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
+from zabbix_utils import Sender
 
 from zbxepics.logging import logger
 from zbxepics.casender.peekqueue import PriorityPeekQueue
@@ -51,9 +48,7 @@ class ZabbixSenderCA(object):
 
         self._monitor_items = []
         self._interval_item_q = PriorityPeekQueue()
-        self.zbx_sender = ZabbixSender(zabbix_server,
-                                       zabbix_port,
-                                       use_config)
+        self.zbx_sender = Sender(zabbix_server, zabbix_port, use_config)
         self.__is_stop = threading.Event()
         self.__stop_request = False
         self._is_running = False

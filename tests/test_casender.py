@@ -1,8 +1,5 @@
 import time
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 
 import pytest
 
@@ -16,9 +13,8 @@ def test_casender_init():
     sender = ZabbixSenderCA('testserver.com', 12345)
 
     zbx_sender = sender.zbx_sender
-    host, port = zbx_sender.zabbix_uri[0]
-    assert host == 'testserver.com'
-    assert port == 12345
+    host_port = str(zbx_sender.clusters[0])
+    assert host_port == '[["testserver.com", 12345]]'
 
 
 @pytest.mark.parametrize('interval,func,item_type', [

@@ -1,9 +1,6 @@
 import os
 from http.server import HTTPServer
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
+import threading
 from socketserver import TCPServer
 import time
 
