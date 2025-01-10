@@ -1,7 +1,7 @@
 from queue import Queue
 
 from epics import PV
-from pyzabbix import ZabbixMetric
+from zabbix_utils import ItemValue
 
 
 class MonitorItem(object):
@@ -19,7 +19,7 @@ class MonitorItem(object):
     item_key : str
         item key of item
     __metric_q : queue.Queue
-        queue of ZabbixMetric
+        queue of ItemValue
     """
 
     def __init__(self, host, pvname, item_key=None):
@@ -52,7 +52,7 @@ class MonitorItem(object):
             timestamp of pv relative to POSIX time origin
         """
 
-        zm = ZabbixMetric(self.host, self.item_key,
+        zm = ItemValue(self.host, self.item_key,
                           value, int(timestamp))
         self.__metrics_q.put(zm)
 
@@ -61,7 +61,7 @@ class MonitorItem(object):
 
         Returns
         -------
-        list of pyzabbix.ZabbixMetric
+        list of pyzabbix.ItemValue
             All metrics in queue
         """
 

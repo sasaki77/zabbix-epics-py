@@ -1,7 +1,7 @@
 import threading
 
 from epics import PV
-from pyzabbix import ZabbixMetric
+from zabbix_utils import ItemValue
 
 
 class IntervalItem(object):
@@ -135,7 +135,7 @@ class IntervalItem(object):
         if value is None:
             return []
 
-        zm = ZabbixMetric(self.host, self.item_key, value)
+        zm = ItemValue(self.host, self.item_key, value)
         return [zm]
 
     def __lt__(self, other):
